@@ -7,3 +7,6 @@ For seasoned developers new to web development, you might be surprised to learn 
 
 This book is written for university students and professionals alike.  If you’ve already done some work in web development, you will likely still learn a lot from seeing things presented from a foundational perspective.  Once you’ve mastered the concepts presented here, you will be better able to make use of new development trends, and make better connections between the acronym soup you encounter as you dive deeper into the discipline.	 
 
+
+
+
