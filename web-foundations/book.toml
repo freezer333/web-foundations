@@ -1,0 +1,6 @@
+[book]
+authors = ["Scott Frees"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Foundations of Web Development"
