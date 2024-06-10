@@ -45,7 +45,7 @@ int main()
     int result = connect(sock, (struct sockaddr *)&ss, sizeof(ss));
     if (result != 0)
     {
-        std::cerr << "Error connecting to server " << result << endl;
+        std::cerr << "Error connecting to server " << strerror(errno) << endl;
         return result;
     }
 

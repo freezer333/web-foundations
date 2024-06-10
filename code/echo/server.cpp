@@ -35,11 +35,17 @@ std::string make_echo_response(std::string input)
 
 void do_echo(int client_socket)
 {
+    std::cout << "A new client has connected." << std::endl;
     while (true)
     {
         char buffer[1024];
         std::string input;
         int bytes_read = read(client_socket, buffer, 1024);
+        if (bytes_read <= 0)
+        {
+            std::cout << "Client has disconnected." << std::endl;
+            break;
+        }
 
         input = std::string(buffer, bytes_read);
         std::cout << "Received: " << input << std::endl;
@@ -73,8 +79,11 @@ int main()
     struct sockaddr_in ss;
     memset((char *)&ss, 0, sizeof(struct sockaddr_in));
     ss.sin_family = AF_INET;
-    ss.sin_addr.s_addr = htonl(INADDR_ANY); // default IP address of server (host)
-    ss.sin_port = htons(LISTENING_PORT);    // port number
+    ss.sin_addr.s_addr = inet_addr("127.0.0.1"); // Just accept local connections
+                                                 // Otherwise we need to deal with
+                                                 // firewall/security issues -
+                                                 // not needed for our little example!
+    ss.sin_port = htons(LISTENING_PORT);         // port number
 
     // Now we bind the listening socket to the port number
     // Should check that bind returns 0, anything else indicates an
@@ -90,7 +99,8 @@ int main()
 
     // At this point, the server is listening, a client can connect to it.
     // We will loop forever, accepting new connections as they come.
-    std::cout << "Listening for incoming connections on port " << LISTENING_PORT << std::endl;
+    std::cout << "Listening for incoming connections on port "
+              << LISTENING_PORT << std::endl;
     while (true)
     {
         // Accept a new connection
