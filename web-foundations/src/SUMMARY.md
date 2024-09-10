@@ -9,6 +9,7 @@
     - [IP Protocols](./network/ip.md)
     - [Transport Control Protocol (TCP)](./network/tcp.md)
     - [Socket Programming](./network/sockets.md)
+    - [Echo Client and Server](./network/echo.md)
     - [Internet History](./network/internet-history.md)
 - [Hypertext Transfer Protocol](./http.md)
     - [Verbs and Nouns](./http/verbs-nouns.md)
