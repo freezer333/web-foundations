@@ -1,7 +1,9 @@
 # Verbs - Requests and Responses
 HTTP is a protocol for referencing and retrieving *resources*.  In the previous section we described how resources are *identified* - which is of course a prerequisite for referencing and retrieving.  Now let's take a look at actual retrieval.
 
-The first thing to understand, and I'd argue that it is one of the most important and fundamental things for anyone who is learning the web to understand, is that HTTP operates on a **request** and **response** basis.  **ALL** action begins with a **request** for a resource, by the client (the web browser).  That request is folled by a **response** from the web server.  **That is it**.  Web servers do not initate any action.
+The first thing to understand, and I'd argue that it is one of the most important and fundamental things for anyone who is learning the web to understand, is that HTTP operates on a **request** and **response** basis.  **ALL** action begins with a **request** for a resource, by the client (the web browser).  That request is followed by a **response** from the web server.  **That is it**.  Web servers do not initate any action.
+
+HTTP requests are just text, text that is sent over a TCP socket to a web server, from a web browser.  They are formatted, they have a structure.  Similarly, HTTP responses are just text too - and are sent over the same TCP socket *from* the web server, to the browser.  The browser and client understand the format and structure of the requests and response, and behave appropriately.
 
 Furthermore, each HTTP request and response pair is **independent**.  That is, there **is no contextual memory** between requests/responses built into the HTTP protocol *at all*.  Of course, you implicitely know that there *must be* some sort of contextual memory - since you know that you can do things in sequence over a series of web pages, such as build a shopping cart and check out, or login before accessing private data.  This contextual memory (state) entirely managed by the web developer however, **it is not** part of HTTP.  HTTP provides tools to support stateful interaction, but it does not do so on it's own.  This is important to keep in mind as you begin.
 
@@ -99,22 +101,22 @@ www.acme.com/info.html
 private.acme.com/info.html
 ```
 
-The path is the same, but they are different web sites, from the perspective of the user.  To help the web server understand which site the request if for, we add our first **HTTP header**, the `host` header to the `GET` request.
+The path is the same, but they are different web sites, from the perspective of the user.  To help the web server understand which site the request if for, we add our first **HTTP header**, the `Host` header to the `GET` request.
 
 ```
 GET /index.html HTTP/1.1
-host: example.com
+Host: example.com
 ```
 From the acme examples above, we can now see why the requests would be different.  Both of the following request *go to the same web server*, but the web server can see that one is asking for `/info.html` from `www.acme.com` and the other from `private.acme.com`.
 
 ```
 GET /info.html HTTP/1.1
-host: www.acme.com
+Host: www.acme.com
 
 ```
 ```
 GET /info.html HTTP/1.1
-host: private.acme.com
+Host: private.acme.com
 ```
 
 Of course, it's up to the web server to be smart enough to differentiate the two requests and return the right resource!
@@ -131,7 +133,7 @@ Go ahead and try it, if you can install telnet on your machine:
 ```
 It will connect, and then sit and wait for you to type something.
 
-Type `GET / HTTP/1.1` and then enter.  Nothing will come back, because the web server is waiting for more before responding.  Type `host: example.com`, and again - nothing will come back just yet.
+Type `GET / HTTP/1.1` and then enter.  Nothing will come back, because the web server is waiting for more before responding.  Type `Host: example.com`, and again - nothing will come back just yet.
 
 The last requirement of an **HTTP request** is a blank line.  This tells the server that you are done with the request.  It's a really low tech delimiter!
 
@@ -217,7 +219,7 @@ We already saw one request header, the `host` header.  Request headers are simpl
 
 ```
 GET /info.html HTTP/1.1
-host: www.acme.com
+Host: www.acme.com
 another: header value
 last: header value
 <blank line>
@@ -226,22 +228,22 @@ last: header value
 Request headers are used to apply additional meta data to the HTTP request itself.  The are many valid request headers, and we don't need to exhaustively enumerate them here.  Let's cover a few, so you understand what they could be used for, and then we'll rely on other reference material for the rest.
 
 #### Common Request Headers
-- **host** - the *only* required header for a valid HTTP request, used to support virtual hosts.
-- **user-agent** - a plain text string identifying the brower type.
-- **accept** - a list of file types the browser knows how to handle.
-- **accept-language** - a list of natural languages the user would like responses to be written in (the HTML).
-- **accept-encoding** - a list of compression formats the browser can use, if the web server wants to use compression.
-- **connection** - indicates whether the TCP connection should remain open after the response is sent (`keep-alive` or `close`)
-- **keep-alive** - indicates the number of seconds to keep the connection open, after the response is sent.  This only makese sense when `connection` is set to `keep-alive`
-- **content-type** - used for requests or responses, indicating what type of data is being sent.  Some requests can carry with them additional data (typically POST, PATCH, PUT), and this helps the server understand what format the data is being transmitted in.
-- **content-length** - the additional data being sent with the request (or the response) has a length, in bytes.  In order for the server (or client, when dealing with responses) to be able to handle the incoming data, it's useful to know how long it is.  `content-length` will represent the number of bytes that are being sent.  Note, as we will se, the content in question is sent over the socket *after* the headers.
-- **referrer** - the URL the user is currently viewing, when the request is made.  Think of this as being set to the url of the web page that the user clicked a link on.  Clicking the link results in a **new** HTTP request to be sent, for that page.  The new request will have the original page as the `referrer`.  This is how *a lot* of internet tracking works, when you arrive at a sight by clicking a link, that web site will know which web site (URL) led you to it.
+- **Host** - the *only* required header for a valid HTTP request, used to support virtual hosts.
+- **User-Agent** - a plain text string identifying the brower type.
+- **Accept** - a list of file types the browser knows how to handle.
+- **Accept-Language** - a list of natural languages the user would like responses to be written in (the HTML).
+- **Accept-Encoding** - a list of compression formats the browser can use, if the web server wants to use compression.
+- **Connection** - indicates whether the TCP connection should remain open after the response is sent (`Keep-alive` or `Close`)
+- **Keep-Alive** - indicates the number of seconds to keep the connection open, after the response is sent.  This only makese sense when `Connection` is set to `Keep-Alive`
+- **Content-Type** - used for requests or responses, indicating what type of data is being sent.  Some requests can carry with them additional data (typically POST, PATCH, PUT), and this helps the server understand what format the data is being transmitted in.
+- **Content-Length** - the additional data being sent with the request (or the response) has a length, in bytes.  In order for the server (or client, when dealing with responses) to be able to handle the incoming data, it's useful to know how long it is.  `Content-Length` will represent the number of bytes that are being sent.  Note, as we will se, the content in question is sent over the socket *after* the headers.
+- **Referrer** - the URL the user is currently viewing, when the request is made.  Think of this as being set to the url of the web page that the user clicked a link on.  Clicking the link results in a **new** HTTP request to be sent, for that page.  The new request will have the original page as the `Referrer`.  This is how *a lot* of internet tracking works, when you arrive at a sight by clicking a link, that web site will know which web site (URL) led you to it.
 
-It's worth taking the time to point out, headers are *suggestions* to the web server.  Your HTTP request might provide a list of natural languages it would like the response in, but that certainly doesn't mean the web server is going to deliver the response in that language!  Some web applications do have language options - but the vast majority do not.  If the HTML on the server is written in Spanish, it doesn't matter what that your HTTP request uses `accept-language` to ask for Japanese.  It's coming in Spanish!
+It's worth taking the time to point out, headers are *suggestions* to the web server.  Your HTTP request might provide a list of natural languages it would like the response in, but that certainly doesn't mean the web server is going to deliver the response in that language!  Some web applications do have language options - but the vast majority do not.  If the HTML on the server is written in Spanish, it doesn't matter what that your HTTP request uses `Accept-Language` to ask for Japanese.  It's coming in Spanish!
 
-Note that as an end user, you aren't all that used to thinking about these request headers.  Your browser fills them in for you.  Some may be based on user preferences (for example, the language you speak).  Others are default values from your browser - like `user-agent`.  If you are using a [Firefox web browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox), the `user-agent` string is set to `Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion`, where geckoversion and firefox version depend on your browser install.
+Note that as an end user, you aren't all that used to thinking about these request headers.  Your browser fills them in for you.  Some may be based on user preferences (for example, the language you speak).  Others are default values from your browser - like `User-Agent`.  If you are using a [Firefox web browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox), the `User-Agent` string is set to `Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion`, where geckoversion and firefox version depend on your browser install.
 
-**It is important to remember** that the web server **cannot trust** anything sent to it!  For example, while Firefox sends a `user-agent` string identifying the HTTP request as coming from Firefox, I could also write a `telnet` clone that added **the very same** `user-agent` string to each request.  The web server would have **no idea** that my own little program was not, in fact, Firefox!  In the next section, we'll see how these headers are send/received in code - and it will be even more obvious.
+**It is important to remember** that the web server **cannot trust** anything sent to it!  For example, while Firefox sends a `User-Agent` string identifying the HTTP request as coming from Firefox, I could also write a `telnet` clone that added **the very same** `User-Agent` string to each request.  The web server would have **no idea** that my own little program was not, in fact, Firefox!  In the next section, we'll see how these headers are send/received in code - and it will be even more obvious.
 
 **A web server CANNOT accept anything written in an HTTP request as truth**, it's just plain text, and it could be sent by anyone, with any program, from any place on the planet!
 
@@ -267,23 +269,104 @@ host: www.google.com
 ```
 Both requests are still identifying the `/` (root) home page on google.com as the page being loaded.  However, the page is loaded/rendered differently when we include the new `q=cats` suffix.
 
-The `?` at the end of the string you typed in marks the end of the **path** in the URL, and the beginning of the **query string**.  The query string is a sequence of **name** / **value** pairs, with name/pair separated by the `=` sign, and pairs separated by the ampersand `&`.  URLS cannot have spaces in them, and there are some other special characters that cannot be used either.  The query string must be encoded to be a valid part of a URL, so if we were thinking of searching for "big cats", we'd need to use the query string `q=big%20cats`, for example.  Most browses will accept and display spaces and other common characters, and seamlessly encode the URL before sending over the network.
+The `?` at the end of the string you typed marks the end of the **path** in the URL, and the beginning of the **query string**.  The query string is a sequence of **name** / **value** pairs, with name/pair separated by the `=` sign, and pairs separated by the ampersand `&`.  URLS cannot have spaces in them, and there are some other special characters that cannot be used either.  The query string must be encoded to be a valid part of a URL, so if we were thinking of searching for "big cats", we'd need to use the query string `q=big%20cats`, for example.  Most browses will accept and display spaces and other common characters, and seamlessly encode the URL before sending over the network.
 
-As you might imaging, query strings aren't terribly difficult to parse (aside from the encoding rules, to an extent).  Query strings are useful because they allow the user to specify an arbitrary number of name value pairs that the web server can use to satisfy the request.  Query strings have a maximum length, which generally varies from server to server.  The maximum length is usually around 2000 characters, but it can be as low as 256 characters.  If you exceed the maximum length, the server may return an error.  Web browsers also place a limit on the length of a URL in total, including the query string.
+As you might imagine, query strings aren't terribly difficult to parse (aside from the encoding rules, to an extent).  Query strings are useful because they allow the user to specify an arbitrary number of name value pairs that the web server can use to satisfy the request.  Query strings have a maximum length, which generally varies from server to server.  The maximum length is usually around 2000 characters, but it can be as low as 256 characters.  If you exceed the maximum length, the server may return an error.  Web browsers also place a limit on the length of a URL in total, including the query string.
 
-Query strings can appear in GET requests (most often), but they can appear in all the rest too - POST, PATCH, PUT, DELETE.  They are supposed to be used as *modifiers*.  An important aspect of query strings is that they are **visible** to the end user.  They appear in the address bar of the web browser, and they are often used to pass information.
+Query strings can appear in GET requests (most often), but they can appear in all the rest too - POST, PATCH, PUT, DELETE.  They are supposed to be used as *modifiers* to the requested resource.  An important aspect of query strings is that they are **visible** to the end user.  They appear in the address bar of the web browser, and they are often used to pass information.
 
 Go ahead and click "search" on google, with "big cats" in the search bar.  Yes, you get search results, but also take a look at the address bar.  The uRL will likely look something like this:
 
 ```
 https://www.google.com/search?q=big+cats&source=somereallylongtrackingstring&oq=big+cats&gs_lp=somereallylongtrackingstring
 ```
-There's probably more tracking strings in there, google is working hard to hold on to some data about you and your browser.  But let's keep focused on the *search* itself.  When you clicked the "Search Google" button, you were submitting an HTML form (more on this later).  The browser was instructed by the HTML to issue a **new** HTTP request, this time, a GET request to www.google.com/search.  Note the path, `/search`.  **search** certainly doesn't corresond to a static HTML page somewhere on google's servers, it's handled by code - and that code examines the value of the query string to know what you are looking for.  In this case, the `q` parameter is used, and search results for "big cats" are returned.
+There's probably more tracking strings in there, google works hard to hold on to some data about you and your browser.  But let's keep focused on the *search* itself.  When you clicked the "Search Google" button, you were submitting an HTML form (more on this later).  The browser was instructed by the HTML to issue a **new** HTTP request, this time, a GET request to www.google.com/search.  Note the path, `/search`.  **search** certainly doesn't corresond to a static HTML page somewhere on google's servers, it's handled by code - and that code examines the value of the query string to know what you are looking for.  In this case, the `q` parameter is used, and search results for "big cats" are returned.
 
 The URL above, with the `/search` path and `q` is *shareable* and *bookmarkable*.  You can copy and paste that URL into an email, and the recipient will see the same search results that you did.  This is a powerful feature of the web, and it's all thanks to the query string.  Whenever we want to issue a request to a particular URL, but we want to specify additional information, refinement, or clarification - we can use query strings.  **Keep in mind, the server needs to exect them, and be willing to use them, you can't just invent them on your own from the browser :)**.
 
+Once you see them, you see them everywhere.  Keep an eye on your browser as you use the web, and you'll see query parameters being used all the time, they have thousands of uses.
+
+One of the more intimidating things about the web is that sometimes it can feel like there are a lot of ways of doing things, and that certain aspects of the technologies end up getting used in many different ways.  While that's true (it gets easier with practice), there is usually some sort of ryhme and reason behind choices.
+
+*Query strings* are best used when you are retreiving a resource (ie. GET), and are best used for specifying some sort of variation of the resource.  This might be any of the following:
+
+- the search term to use when generating search listings
+- the starting and destination addresses in a door-to-door mapping site
+- page numbers, limits per page, and other filters on product search pages
+- ... and much more
+
+Query strings are great when the query string is a meaningul part of what you might want to copy, save, or later visit.  Query strings are part of the URL, and thus are saved in browser history.
+
 ### Request Body
-*Talk about content-type and content-length.  Refer to next section in terms of parsing*
+Think of the last time you logged into a web site.  You entered your username or email address, along with your password.  Then you clicked "Login" or "Sign in".  This isn't much different than typing "big cats" into Google's search bar, and pressing "Search".  Both pages use an HTML form (we'll see it in a while).  However, somethign is very different.  Unlike the search results page on Google, after you click the button and login,  **your username and password are not shown in the address bar**.  The username and password were sent *along with* the request, but they **were not sent as query paramters**.  Instead, they were sent as part of the **request body**.
+
+Before moving forward, it's worth nothing something really important.  Just because the request body doesn't show up in the address bar, the data sent to the web server as part of the request body **is not private** and is **not secure**.  Of course, it's better to use the request body rather than query parameters for sensitive information, it would be embarrassing to have this information right out in the open on the screen, for all to see, copy, and view in browser history.
+
+```
+https://embarassment.com/login?username=sfrees&password=broken
+```
+**However**, do not make the mistake of thinking a user name and password are safe from prying eyes just because you put it in a request body instead.  Unless you are using TLS/HTTP, which encrypts the HTTP request itself, then **anyone** can intercept your HTTP request and can absolutely read the request body!  It's still sent as plain text - it's just *slightly* more discrete.
+
+Now let's get back to the **request** body.  An HTTP request contains a **start line** and then one (the host) or more HTTP request **headers**, as described above.  The request can have *any* number of headers, each on their own line.  A **blank** line indicates the end of the HTTP request headers.  After the blank line, however, additional content can be sent.  This additional content *is* the request's body.
+
+In order for an HTTP request to have a body, **it must have `Content-Length`** as one of it's headers.  In nearly all cases, it also **must** have `Content-Type` as one of it's headers as well.  This allows the web server to read the request headers, understand what is coming, and then to read the request body itself.
+
+Not all HTTP verbs may have request bodies.  When using a request body, you are limited to `POST`, `PATCH`, and `PUT`.  More on why that is in a moment.
+
+Here's an example of an HTTP `POST` message that submits some text to a URL on example.com
+
+```
+POST /test HTTP/1.1
+Host: example.com
+
+Content-Length: 26
+Content-Type: text/plain
+
+Hello World - this is fun!
+```
+**Pro Tip**&#128161; You might have noticed that a lot of the urls we are starting to use do not have .html extensions.  It's helpful to start moving away from the notion of urls ending with .html - they usually do not.  The path part of the URL ordinarily maps to *code*, that generates a response (usually HTML).  Situations where URLS map *directly* to plain old HTML files on the server are rare, and the exception.
+
+In the request above, the `Content-Type` indicates that the request body is simply plain text, and the `Content-Length` header tells the receiver to expect 20 bytes.  If you think back to the Echo Server we wrote in chapter 2, you can imagine how a program (the web server) may read each line of the HTTP request - start line, then the headers - and then use that information to allocate enough space to read the rest of the request body.
+
+Reading 20 bytes is one thing, but understanding it is another.  In the first example above, `text/plain` indicates that there really isn't much to parse - and that they bytes should just be intepreted as normal ASCII code characters.  `text/plain` is a [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) - one of many internet standard format codes.  We'll discuss more when we describe responses, but requests can have several `Content-Type` values that are pretty meaningful.
+
+Let's return to that hypothetical login situatation.  We will learn about HTML forms in a future chapter, but for now let's just assume they allow use to specify a **name** for each input field, and then whatever the user types in the text box is the value.  Those name value pairs can be used in to build a query string, but they can also be part of the request body instead.
+
+Here's an HTTP post that includes form data - name value pairs formatted just like they were when part of the query string, but now they are part of the request body.
+
+```
+POST /login HTTP/1.1
+Host: example.com
+
+Content-Length: 31
+Content-Type: application/x-www-form-urlencoded
+
+username=sfrees&password=broken
+```
+
+Here, the request body is ASCII text, but the header is indicating to the web server that it is actually encoded as name value pairs, using the `=` and `&` delimeters.  The server can read the request body (all 31 bytes of it) and parse it - just like it would parse the same data if it were at the end of a url as a query string.
+
+Request bodies can be relatively short, where form data like that shown above is being sent with the request.  **However**, request bodies can also be *very large*.  They are used to upload lots of text and to upload *files* of arbitrary length.  Web server will usually impose some limit on the length of a request body, but it's on the order of 10's of megabytes, or possibly far far larger.
+
+### Query Strings or Request Body?
+In most cases, whether to use query string or request body to add data to a request is fairly straightforward conceptually.  If you are sending *modifiers*, then those are usually done as query strings.  Again, things like search terms, page numbers, page limits, etc.  If you are sending what you would consider **data**, especially if that data is meant to persist somewhere, then you are probably better off using request **body**.  Here's a further breakdown:
+
+- Use Query String if:
+  - Data is clearly name value pairs
+  - There is a fairly limited number of name value pairs, and they are fairly short (under 2000 character total)
+  - The name/value pairs aren't sensitive at all, you are OK with them being copy and pasted by users, and showing up in bookmarks and browser history.
+- Use Request Body if:
+  - Data is meant to change the state of some information store, or the state of the application itself.  This includes data that will be stored to a database, the session (we'll see this later), login data, etc.
+  - The data is large (anything over a couple of thousand characters)
+  - The data is sensitive (remember, the request body isn't secure either, but it's better than having it in the address bar!)
+
+Data size and sensitivity is pretty straightforard.  The idea that the data, coming along with a request is thought of as *data* rather than a *modifier* is a little more subtle.  It's a bit of an art form, but it lines up with why we use different HTTP verbs too.  It might help to see it in that context:
+
+- HTTP GET:  Does not have a request body.  Query string is the only way to transmit data with the request.  GET is, by definition, supposed to be a read-only operation - the state of the server **should not** change as a result of the GET request.
+- HTTP POST:  Can have request body, and query string.  Recall, POST is used to submit an entity (data) *to* the resource.  The data being submitted, which is usually thought of as something that will be persisted, or have some sort of side effect, usually is sent in the request body.  Parameters that may effect *which resource* is being affected, or *how*, might make use of query string.
+- HTTP PUT:  Usually will just use request body - which includes the data to *create* or *overwrite* the resource.  Again, it's possible that a query string can be used, in conjunction, to further refine what type of entity is being created or overwritten - but the data belonging to the entity will be sent as a request body.
+- HTTP PATCH:  Same as PUT, in that the entity data being modified is usually best sent as a request body.
+- HTTP DELETE:  There is never a request body for a DELETE request, as no data is being sent - only removed.  It is possible that query parameters may serve as ways to specify options for deletion (aks soft delete, cascading delete, etc).
 
 We've already seen an HTTP response a few times now.  Let's dive into what a well formed HTTP response looks like now.
 
@@ -327,10 +410,105 @@ There are a lot more.  It's certainly worth keeping a [reference](https://develo
 
 **Pro Tip**&#128161; The text after the status code in the HTTP response code is a bit of an anomoly.  Strictly speaking, it should be the same text that is used to describe the status code in the official [specifications](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).  In practice, developers often override this, and include other text - perhaps more accurately describing the result.  This can be potentially unwise, since it's possible a client could use the response text in some way, and behave unexpectedly.  Web browsers will generally display the response code string to the user, as part of a generically formatted HTML page (especially for 400 and 500 level codes), and particularly when no body (HTML) portion is included in the response.
 
-### Redirects
+We already saw a more full response earlier in this section, when reviewing the HTTP request/response from example.com.  We saw that the following *request*:
+```
+GET /index.html HTTP/1.1
+Host: example.com
+```
+... resulted in the web server *responding* with the following response (truncated to save page space):
+
+```
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Age: 86286
+Cache-Control: max-age=604800
+Content-Type: text/html; charset=UTF-8
+Date: Fri, 13 Sep 2024 18:40:40 GMT
+Etag: "3147526947+gzip"
+Expires: Fri, 20 Sep 2024 18:40:40 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECAcc (nyd/D144)
+Vary: Accept-Encoding
+X-Cache: HIT
+Content-Length: 1256
+
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+
+    <meta charset="utf-8" />
+    ... more HTML
+```
+
+At this point, some of this response may be feeling similar to what we saw with requests.  The **status** line (the first line) is indicating the version and result code.  The next 12 lines are **response headers**, formatted the same way they were in requests.  Then there is a **blank** line, and then the response **body**.
 
 ### Headers
+Response headers are used by the web server to describe the response to the client.  *Remember*, the client (the web browser) needs to read the response from a socket.  The response is plain text, and the client must read the headers before the response body (assuming there is a response body).  With this in mind, some of the response headers you see above should make sense:
+
+- `Accept-Ranges`: indicates if the server supports range requests, which are requests that ask for only parts of the document.  This isn't commonly used, but you could imagine this would be helpful when requesting things like videos, where you only want a certain range (time period) returned.
+- `Vary`: Usually used in caching, to decide how to cache the response.
+- `Age`: Amount of time the response data was in the *servers* or *proxy* cache.
+- `Cache-Control`: Advises the browser how long to cache the response (meaning, the browser should skip issuing a new request for this resource within the given time frame)
+Responses may contain binary data, and that data could be in the form of a file - with various extensions.  Here, the more exhaustive list of MIME types fits our use case more, since the browser needs to be able to handle many more types of responses.
+- `Date`: Primarily useful for caching on the client side, it's just saying what the date of the response was.
+- `Etag`: This is a lot like a checksum, it's a hash of the response.  This can be used, in conjunction with the `HEAD` request to allow the client to determine if it's worth requesting a resource that was recently requested and cached.  If the Etags match (recall, `HEAD` returns only the headers, not the entire content), then there is no reason to issue a full request.
+- `Expires`: Advises the browser **not** to cache the request beyond a certain time.
+- `Last-Modified`: Can eb useful for client-side browser caching
+- `X-Cache`: Headers starting with the `X-` prefix are not standard headers, they are user (in this case the server) defined.  In this case, it likely means the server responded to the request with cached data.
+- `Content-Type`: Serves the same purpose as with requests - tells the client what kind of data is being sent, so it can be effectively handled.  - - `Content-Length`: The number of bytes in the response body!
+- `Server`: Sort of like `User-Agent`, but for servers.  This identifies the server software.  In most cases, this is **not** recommended, since it let's would-be attackers know more than they need to know - and the more they know, the easier it is to find exploits.  There are very few logical reasons a browser needs to know this information.
+
+There are *a lot* of request and response headers.  The MDN has a [fantastic list](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers), we don't need to enumerate them all.  For now, there are a few takeways though:
+
+- Response headers often describing caching.  Caching is a critical aspect of the web.  Caching will occur on the server side, and headers will be used to describe that (`Vary`, `Age`, `Date`, `X-Cache`, etc).  Caching also occurs on the browser side, and often the server will *assist* in this process - including headers such as `Expires`, `Etag`, `CacheControl` to help guide the browser.
+- Response headers, just like request headers, will describe the **body** of the response.  In particular, the content type, encoding, and length.  This information is critical to be able to read the appropriate data from the socket, parse it, and process it.
 
 ### MIME Types
+Just like with request bodies, MIME types play a pivotal role in describing response bodies.  For responses that are delivering a resource, the resource will be delivered via the response body.  For 300 (redirect) responses, 400 (client error) responses, and 500 (server error) responses, the response body may or may not be used, and is often ignored by the browser.  If you've ever seen a fancy web page render that says "Not found", but with a [lot of cute graphics](https://www.pixar.com/404), it's because the 404 response has a response body, and the browser rendered it.
+
+A response body is typically going to contain data that is either meant for the browser to render directly (this include plain text, HTML, CSS, JavaScript code, images, audio, video), or files that the browser may either *attempt* to render (CSV data, JSON data, PDF documents) or use the underlying operating system to launch a better program to open (a Microsoft Word document, for example).  All of this is of course determined by the [MIME](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types) type.
+
+It's important to understand that for every response, there is one request - and for every request there is one response.  As we will see, often a request for an HTML page will result in HTML being loaded in the browser, and then for *that HTML* to contain links to other resources.  Many times, those resources are requested right away, in sequence.  For example, after loading HTML with references to images, the browser will initiate **new** requests for **each** image, at the URL listed in the HTML.  We'll dive into to this in more depth later - but for now it's important to remember that there is not *mixed* responses.
 
 ### Response Body
+There response body itself is simply text, or encoded text.   Depending on the MIME type, the data might be URL encoded binary data (essentially, data that appears to be gibberesh), or it could be perfectly readable text.   The text might be structured (CSV, JSON, HTML, JavaScript code, CSS), or it might be unstructured (plain text).  No matter what, the response body **always** follows a blank line in the HTTP response message, which in turn follows the last HTTP response header.
+
+No matter how large the response body is, it's still part of the HTTP response.  This means that just like a short little HTML page being returned by example.com, an HTTP request that is generated for a multi-gigabyte mpeg-4 video is going to be returned as a standard HTTP response.  The difference is that the `Content-Type` will indicate that it's a video (maybe `/video/mp4`), and the video data will be very long, using binary encoded text data.
+
+### Redirects
+We discussed 400 and 500 error codes, and they are fairly self explanatory.  A response within those ranges are telling the browser (and the user) that the request failed.  The actual code, and potentially the response body, will tell them a bit more about why - but the bottom line is that the request itself failed.
+
+A 200 response code, and all of it's variants, is also fairly self explanatory.  The resource was returned, and in most cases, the browser will simply render it.
+
+The 300 level codes are a bit more difficult to succinctly explain.  300 level codes indicate that the resource the client has requested (the URL) exists, but exists elsewhere.  These response codes are telling the web browser that the response was not necessarily an *error*, but the web server cannot fullfill the request.  Instead, the web server is *advising* the web browser to make the request to some other location (URL).
+
+Let's start with a simple (and probably the original) use case:  someone decided that a page on the website should move to another location:
+
+- Original url:  http://www.example.com/a/b/c/data.html
+- New url:  http://www.example.com/other/data.html
+
+Suppose someone has bookmarked the original URL, and so they make a request to the /a/b/c/data.html path.  The web server, of course, could simply return a `404` - not found.  However, in order to help, it instead can return a `301` status code - indicating that the resource has *moved permenantly*.
+
+On it's own, this isn't particularly useful.  Where this becomes more powerful is when the `301` response code is coupled with the `Location` response **header**, which is used to indicate the **new** location.
+
+```
+HTTP/1.1 301 MOVED PERMENANTLY
+Location: http://www.example.com/other/data.html
+```
+Now, the web browser *may* elect to actually process this response and issue a **NEW** request to the new URL, /other/data.html.  Most web browsers will do this.  It's called "following the redirect", and it happens automatically.  You will see the address bar change, with the new address displaying.
+
+The situation described above is easiest to describe, but it isn't the most common type of redirect response used.  The `307` Temporary Redirect response is actually the redirec that is most frequently used on the web.  This is because there are many cases where it's not that the resource has moved, but that the web server wants the web browser to issue a *new* request following the first.
+
+A typical sequence that utilizes the `307` code is for logging in.  Typically, the browser will send a request to a url list `/login`, as a POST request.  The login logic will decide if the user can log in (their passwords match, etc), and then the user will likely be presented with a page based on their role.  They might see a detailed dashboard, perhaps if they are a site administrator.  They might see a more limited screen if they are a normal user.  The point is, depending on who they are, and what they do, they may have a different "home" page after logging in.
+
+At first, you might think that we'd just have one set of code in charge of rendering `/home`, which takes into account all that logic.  But in fact, it's usually better (and easier) to create multiple pages for the different types of users.  Maybe something like `/admin/home` and `/user/home`.  Those URLs can simply focus on rendering the right content.
+
+The trick is, how do we *response* to the POST request to `/login`, but at the same time somehow navigate the user (after login) to the right home page?  We use a `307`!
+
+- If the POST to `/login` failed (username invalid, password doesn't match), we could *response* with a `307` with `Location` set to `/login` again - so they could repeat the login attempt.
+- If the POST to `/login` succeeded, the web server would presumably make note that the user was logged in (we'll see how this is done later), and **redirect* the user to either `/admin/home` or `/user/home` using the `Location` header.
+
+In all three cases, the browser will automatically request the url specified in the `Location` header.
+
+The next time you log in to a website, watch the address bar!  In almost every case, you'll notice that it switches to something else after you've logged in.  Sometimes there are even multiple redirects!
