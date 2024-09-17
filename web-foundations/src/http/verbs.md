@@ -267,11 +267,20 @@ host: www.google.com
 ```
 Both requests are still identifying the `/` (root) home page on google.com as the page being loaded.  However, the page is loaded/rendered differently when we include the new `q=cats` suffix.
 
-The `?` at the end of the string you typed in marks the end of the **path** in the URL, and the beginning of the **query string**.  The query string is a sequence of **name** / **value** pairs, with name/pair separated by the `=` sign, and pairs separated by the ampersand `&`.
+The `?` at the end of the string you typed in marks the end of the **path** in the URL, and the beginning of the **query string**.  The query string is a sequence of **name** / **value** pairs, with name/pair separated by the `=` sign, and pairs separated by the ampersand `&`.  URLS cannot have spaces in them, and there are some other special characters that cannot be used either.  The query string must be encoded to be a valid part of a URL, so if we were thinking of searching for "big cats", we'd need to use the query string `q=big%20cats`, for example.  Most browses will accept and display spaces and other common characters, and seamlessly encode the URL before sending over the network.
 
-Query strings can appear in GET requests (most often), but they can appear in all the rest too - POST, PATCH, PUT, DELETE.  They are supposed to be used as *modifiers*.
+As you might imaging, query strings aren't terribly difficult to parse (aside from the encoding rules, to an extent).  Query strings are useful because they allow the user to specify an arbitrary number of name value pairs that the web server can use to satisfy the request.  Query strings have a maximum length, which generally varies from server to server.  The maximum length is usually around 2000 characters, but it can be as low as 256 characters.  If you exceed the maximum length, the server may return an error.  Web browsers also place a limit on the length of a URL in total, including the query string.
 
+Query strings can appear in GET requests (most often), but they can appear in all the rest too - POST, PATCH, PUT, DELETE.  They are supposed to be used as *modifiers*.  An important aspect of query strings is that they are **visible** to the end user.  They appear in the address bar of the web browser, and they are often used to pass information.
 
+Go ahead and click "search" on google, with "big cats" in the search bar.  Yes, you get search results, but also take a look at the address bar.  The uRL will likely look something like this:
+
+```
+https://www.google.com/search?q=big+cats&source=somereallylongtrackingstring&oq=big+cats&gs_lp=somereallylongtrackingstring
+```
+There's probably more tracking strings in there, google is working hard to hold on to some data about you and your browser.  But let's keep focused on the *search* itself.  When you clicked the "Search Google" button, you were submitting an HTML form (more on this later).  The browser was instructed by the HTML to issue a **new** HTTP request, this time, a GET request to www.google.com/search.  Note the path, `/search`.  **search** certainly doesn't corresond to a static HTML page somewhere on google's servers, it's handled by code - and that code examines the value of the query string to know what you are looking for.  In this case, the `q` parameter is used, and search results for "big cats" are returned.
+
+The URL above, with the `/search` path and `q` is *shareable* and *bookmarkable*.  You can copy and paste that URL into an email, and the recipient will see the same search results that you did.  This is a powerful feature of the web, and it's all thanks to the query string.  Whenever we want to issue a request to a particular URL, but we want to specify additional information, refinement, or clarification - we can use query strings.  **Keep in mind, the server needs to exect them, and be willing to use them, you can't just invent them on your own from the browser :)**.
 
 ### Request Body
 *Talk about content-type and content-length.  Refer to next section in terms of parsing*
