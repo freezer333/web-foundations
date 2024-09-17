@@ -1,2 +1,2 @@
 # Chapter 1:  Introduction
-![Launch!](./images/launch.png)
+![Launch!](../images/launch.png)

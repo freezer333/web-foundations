@@ -7,14 +7,12 @@ Regardless of which language you interact with the TCP/IP stack through, one sin
 2. Sequence numbers (bi-directional)
 3. TCP acknowledgement timer configuration, flow control established during TCP handshake
 
-Notice, a *socket* is really just "state".  It's not a physical connection, it's the book keeping associated with implementing TCP on top of IP.  In some languages, sockets are naturally represented by classes and objects, while in others they are represented by *file descriptors* or *handles*.  Regardless, the operating systems is generally the player that maintains all the book keeping - as it's the one that is implementing the IP and TCP protocols.  The software representation of the socket is your *interface* into all of this functionality.
+Notice, a *socket* is really just "state".  It's not a physical connection, it's the book-keeping associated with implementing TCP on top of IP.  In some languages, sockets are naturally represented by classes and objects, while in others they are represented by *file descriptors* or *handles*.  Regardless, the operating systems is generally the player that maintains all the book-keeping - as it's the one that is implementing the IP and TCP protocols.  The software representation of the socket is your *interface* into all of this functionality.
 
 ## Side Note:  What about UDP?
 TCP isn't the only transport layer (Layer 4) protocol built on top of IP.  UDP - **U**ser **D**atagram **P**rotocol - adds some convenience on top of IP (Layer 3), but not quite as much as TCP does.  While TCP is a *connection oriented* protocol, which establishes sequence numbers for communication, the UDP protocol is *connectionless*.  UDP adds the concept of **port numbers** on top of IP (as TCP does), but peers can send data to target machines without any initial "handshake".  This means communication can be faster - there's less overhead - but the tradeoff is that UDP does not include a mechanism to recognize lost or out-of-order communication, or the ability to correct these problems.  This is because UDP does **not** add a concept of sequence numbers, which allows for any detection of lost/out-of-order packets.  When working with UDP, the application developer must handle these concepts (if necessary) at the application level.
 
 It's fair to ask - why does UDP exist if it doesn't detect or resolve lost or out of order packets?  The answer is pretty simple - there are times where you simply don't need *reliability*, but you do want to send / receive data via specific port numbers.  The IP protocol sends data between machines, but Layer 4 Transport Protocols (TCP and UDP) establish port numbers to allow for separate streams of communication.  This allows multiple applications on a single machine to receive data from different machines.
-
-TODO:  SVG Image of streams
 
 UDP is a great alternative for applications that are streaming *updates*.  For example, a networked video game may be sending a player's physical location to peer machines.  In this case, each individual position update is not critical - if one is lost, it's better to receive the next update, rather than try to get the last update resent.  Likewise, when implementing video or audio communication systems - where video content is streaming across the internet - a dropped frame or audio clip shouldn't be resent - it's better to simply receive the next one.  These types of applications need port numbers (separate streams of data communication), but they don't need the detect/resend functionality of TCP.  UDP is enough, and since it's more efficient, applications benefit from increased network performance.
 
@@ -26,20 +24,22 @@ The terms *server* and *client*  are loaded terms in computer networking.  They 
 - *The Server* - the machine that **accepts** new connnections when contacted by another machine.
 - *The Client* - the machine that initiates contact with a server to establish a connection.
 
-Notice what the above does **not** say.  There is not contextual distinction between what a server or and client actually do, once they connect with each other.  There is no expectation that further communication is in a specific direction (server sends things to client, or vice versa), bi-directional, or otherwise.  There is an implied difference in the two machine's role however:  the *server* usually accepts and can maintain connections with *several* clients simultaneously, while clients generally talk to one server at a time (although there are *many* exceptions to this pattern).
+Notice what the above does **not** say.  There is no contextual distinction between what a server or and client actually do, once they connect with each other.  There is no expectation that further communication is in a specific direction (server sends things to client, or vice versa), bi-directional, or otherwise.  There is an implied difference in the two machine's role however:  the *server* usually accepts and can maintain connections with *several* clients simultaneously, while clients generally talk to one server at a time (although there are *many* exceptions to this pattern).
 
-So, how does a client establish a connection?  It all starts with the client application knowing which machine it wants to talk to, and under which *port* number.  Let's outline a sequence, and then we will discuss how the client might obtain this information a bit later.
+So, how does a client establish a connection?  It all starts with the client application knowing which machine it wants to talk to, and through which *port* number.  
 
-### Scenario - The Server
+Let's outline an **example** sequence, and then we will discuss how the client might obtain this information a bit later.
+
+### The Server:  Example
 The server application is running on a machine with an IP address of 129.145.23.122.  It *listens* for TCP connections from clients on **port number 3000**.  This is commonly written as `129.145.23.122:3000`.  In the next section, we will cover how this *listening* action is performed in C code, and then in some other languages.
 
-### Scenario - The Client
+### The Client:  Example
 The client application is running on a different machine, with an IP address of 201.90.1.17.  Critically, **it knows the server's  IP address and the port number** - it knows that it will be connecting to `129.145.23.122:3000`.  
 
-### Scenario - The Connection
+### Making the Connection
 The **client** will invoke an API call to *connect* to the server - passing the `129.145.23.122:3000` IP/port information to the appropriate library call.  
 
-TODO:  Diagram of initial state (listening)
+![Socket connection process](../images/socket-connect.png)
 
 This library call (or sequence of calls, depending on the programming language and operating system) will do a few things:
 
@@ -53,8 +53,6 @@ To summarize:
 - The server creates a new port number, and sends this port number to the client so the client knows which port number to talk to the server over from now on.
 
 At this point, we can consider the *socket* connected.  The *socket* is a connection - it contains the IP address of both machines, the port numbers each machine is using to communicate *for this specific connection*, and all the TCP bookkeeping data such as sequence numbers and acknowledgement parameters.
-
-TODO:  Diagram of connected state (with port numbers)
 
 From this point forward, when the client sends data to the server, it sends it via TCP to IP address 129.145.23.122 **on port 8432**.  When the server sends data to the client, it sends to IP address 201.90.1.17 **on port 5723**.  Port numbers 8432 and 5723 are **arbitrary** and dynamically generated at run time - only the listening port on the server (3000) must be known ahead of time.
 

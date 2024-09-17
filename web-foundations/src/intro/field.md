@@ -331,7 +331,7 @@ Now we've arrived at the land of *back end frameworks*.  Server side, backend we
 
 3.  **View transformations** - we aren't going to generate HTML with strings.  We are going to build objects of data programmatically (models), and then use templating engines to transform the data into HTML (views)using a template language.  It's a mouthful, but when we get there, you will see how much easier it makes things! There are tons of templating languages, and most do pretty much the same thing.  If you've heard about [ejs](https://ejs.co/), [Jinja](https://jinja.palletsprojects.com/en/3.1.x/), [pug](https://pugjs.org/api/getting-started.html), [HAML](https://haml.info/), [Liquid](https://shopify.github.io/liquid/), [Mustache](https://mustache.github.io/), or [Handlebars](https://handlebarsjs.com/)... they are all templating languages with large following in the web development community.  We'll talk about pug in more detail later.  Once you learn one, the others are very easy to pick up.
 
-Full featured web frameworks tend to cover #1 and #2, and typically will let you choose which templating language to use.  Modern frameworks are available in just about every programming language you can think of.  Most modern frameworks support the Model-View-Controller (MVC) Architecture - which we discussed a bit above.  MVC is a way of organizing the application in a way that seperates model (the data), the view (HTML generation), and the business logic (also called *controller*).  
+Full featured web frameworks tend to cover #1 and #2, and typically will let you choose which templating language (#3) to use.  Modern frameworks are available in just about every programming language you can think of.  Most modern frameworks support the Model-View-Controller (MVC) Architecture - which we discussed a bit above.  MVC is a way of organizing the application in a way that seperates model (the data), the view (HTML generation), and the business logic (also called *controller*).  
 
 It's hard to say if one is better than the other - there tends to be a few good choices for each programming language.  Which programming language you choose is probably more of a decision based on you and your teams skills, and preferences - rather than anything specific to the web.
 
@@ -361,6 +361,8 @@ Here's a sampling of some popular backend web frameworks.  Each of these covers 
     - [Deno](https://deno.com/)
 
 We'll discuss frameworks in depth later in the book.  
+
+**Pro Tip**&#128161;  You don't want to describe yourself as "a Django developer" or "Laravel developer".  You want to learn backend web development and be comfortable in any language or framework.  You want to call yourself a *web backend developer* - or better yet - *web developer*.  Specialization is marketable, and valuable, but you never want to pigeonhole yourself into one framework - it advertises a lack of breadth.
 
 ### In-between and outside
 We've glossed over the *in between* part, the technology that connects the front end and back end.  That's networking, and that is HTTP.  We will cover that extensively in the next few chapters!  
