@@ -1,5 +1,7 @@
 # A Read-Only Contact List
 
+MOVE THIS TO JAVASCRIPT CHAPTER
+
 - Develop a read-only contact list:
   - Contacts in a JSON file (point towards other sections)
   - Contacts have attributes, including images
