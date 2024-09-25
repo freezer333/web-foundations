@@ -2,6 +2,11 @@
 <html>
     <head>
         <title>Example</title>
+        <style>
+        table, th, td {
+          border: 1px solid black;
+        }
+        </style>
     </head>
 
     <p>
@@ -97,5 +102,88 @@ This is an
             Here's some more text.
         </p>
         <!-- This won't render either-->
+
+        <ol>
+            <li>Item A</li>
+            <li>
+                Item B
+                <ol>
+                    <li>Item B.1</li>
+                    <li>Item B.2</li>
+                    <li>Item B.3</li>
+                </ol>
+            </li>
+            <li>Item C</li>
+        </ol>
+
+        <ul>
+            <li>Item A</li>
+            <li>Item B</li>
+            <li>Item C</li>
+        </ul>
+        <dl>
+            <dt>Term 1</dt>
+            <dd>This is the definition for Term 1</dd>
+
+            <dt>Term 2</dt>
+            <dd>This is the definition for Term 2</dd>
+        </dl>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Year of Publication</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Effective Java</td>
+                    <td>2008</td>
+                    <td>Joshua Bloch</td>
+                    <td>978-0134685991</td>
+                </tr>
+                <tr>
+                    <td>Clean Code</td>
+                    <td>2008</td>
+                    <td>Robert C. Martin</td>
+                    <td>978-0132350884</td>
+                </tr>
+                <tr>
+                    <td>The Pragmatic Programmer</td>
+                    <td>1999</td>
+                    <td>Andrew Hunt, David Thomas</td>
+                    <td>978-0201616224</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table style="margin-top:5em">
+            <caption>Sample Table with Spanning Cells</caption>
+            <thead>
+                <tr>
+                    <th>Column 1</th>
+                    <th>Column 2</th>
+                    <th>Column 3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">Rowspan Cell</td>
+                    <td>Data 1</td>
+                    <td>Data 2</td>
+                </tr>
+                <tr>
+                    <td>Data 3</td>
+                    <td>Data 4</td>
+                </tr>
+                <tr>
+                    <td>Data 5</td>
+                    <td colspan="2">Colspan Cell</td>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>
