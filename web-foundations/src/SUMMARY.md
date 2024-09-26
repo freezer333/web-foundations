@@ -21,7 +21,7 @@
     - [HTML Structure](./html/structure.md)
     - [Inline Elements, Text, and Links](./html/inline.md)
     - [Block Elements](./html/block.md)
-    - [Media Types](./html/media.md)
+    - [Media Types, Media Elements, and Frames](./html/media.md)
 
 - [JavaScript Kickstart](./js/js.md)
     - [A Read-Only Contact List](./html/ro-contact-list.md)

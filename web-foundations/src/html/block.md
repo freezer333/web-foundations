@@ -278,8 +278,7 @@ Here's an example (from a somewhat ancient version of a website) of where to use
 
 A picture is worth a thousand words in this case.  As you can see, the first image outlines a *true* table - and yes, the HTML in that area uses a `table` element, with `th` and some nice CSS.  The image below shows *another* table though - and it's not a table at all - it's a collection of cells that the web author has used a `table` element to *arrange* as a grid.  This is an old web page, and it has some serious flaws.  First, a `table`, as  discussed above, cannot adequately adjust it's layout for smaller screens. This makes it an incredibly poor element for laying things out as a grid, because that grid will need horizontal scrolling on smaller devices.  Today, CSS has vastly superior layout mechanisms, which allow you to construct the same page layout using normal block containers like `div`, `section`, `nav`, `aside`, etc. 
 
-You should **never** use tables to layout content on a page.  You should use tables to present data!
-
+You should **never** use tables to layout content on a page.  You should use tables to present data!∂
 
 ## More Block Elements
 There are more block elements, some of which we will spend a lot more time on soon.  HTML forms, which allow for user input, will be covered in a later chapter.  HTML forms themselves are block elements, and individual controls (text inputs) are inline and block elements.  THere are several specialized elements for multimedia, including a few block elements (`video`) that we will cover next as well.
