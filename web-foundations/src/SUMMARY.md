@@ -24,4 +24,9 @@
     - [Media Types and Media Elements](./html/media.md)
 
 - [JavaScript Kickstart](./js/js.md)
+    - [Language Foundations](./js/jsintro.md)
+    - [Objects](./js/objects.md)
+    - [Arrays](./js/arrays.md)
+    - [Functions](./js/functions.md)
+    - [In Practice](./js/inpractice.md)
     - [A Read-Only Contact List](./html/ro-contact-list.md)
