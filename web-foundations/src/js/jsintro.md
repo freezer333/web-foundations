@@ -1,19 +1,21 @@
 # Language Foundations
-We are now going to a take a detour *away* from talking about web development.  We are going to start looking at JavaScript, as a fundamental programming language.  We will examine the syntax, runtime, and design features of the language - just as you likely did when you learned your first programming languages - maybe Python, Java, or C++.  We will cover the foundational aspects of programming in JavaScript without discussing how the language connects to web development specifically just yet - although we will start out with a brief history.  Of course, JavaScript is inescapably linked to web development, but it's important to remember that it is *actually just a general purpose programming language*!
+We are now going to a take a detour *away* from talking about web development and start looking at JavaScript as a fundamental programming language.  We will examine the syntax, runtime, and design features of the language - just as you likely did when you learned your first programming languages - maybe Python, Java, or C++.  We will cover the foundational aspects of programming in JavaScript without discussing how the language connects to web development specifically just yet - although we will start out with a brief history.  Of course, JavaScript is inescapably linked to web development, but it's important to remember that it is *actually just a general purpose programming language*!
 
 ## How we go here
 JavaScript, often abbreviated as JS, has a rich and evolving history that began in the mid-1990s. It was created by Brendan Eich while working at Netscape Communications Corporation. In 1995, Eich was tasked with developing a lightweight scripting language to enable interactive web pages. The result was Mocha, which later became known as LiveScript. However, just before its official launch, Netscape rebranded it to JavaScript, partly as a marketing strategy to leverage the growing popularity of the Java programming language, even though the two languages are fundamentally different.
 
-The first official release of JavaScript was in December 1995 with Netscape Navigator 3.0. This version introduced basic scripting capabilities, allowing developers to manipulate HTML elements and respond to user events. The language's initial focus was on client-side scripting, enabling dynamic content without the need for full-page reloads. The language's data *was the website* being rendered, and the code you wrote manipulated the structure (the HTML).  In many ways, you can think of JavaScript originally as a programming language designed to allow you to modify HTML being rendered by the browser.  As the web exploted, JavaScript quickly gained traction, becoming a standard component of web development.
+The first official release of JavaScript was in December 1995 with Netscape Navigator 3.0. This version introduced basic scripting capabilities, allowing developers to manipulate HTML elements and respond to user events. The language's initial focus was on client-side scripting, enabling dynamic content without the need for full-page reloads. The language's data *was the website* being rendered, and the code you wrote manipulated the structure (the HTML).  In many ways, you can think of JavaScript originally as a programming language designed to allow you to modify HTML being rendered by the browser.  As the web exploded, JavaScript quickly gained traction, becoming a standard component of web development.
 
 In 1996, Microsoft introduced its own version of JavaScript, called JScript, which led to compatibility issues across different browsers. To address this, the European Computer Manufacturers Association (ECMA) standardized the language under the name ECMAScript in 1997. The first edition, ECMAScript 1 (ES1), laid the groundwork for a more uniform scripting environment across browsers, promoting greater interoperability.
 
 Over the years, JavaScript evolved significantly. ECMAScript 3 (ES3), released in 1999, introduced crucial features such as regular expressions, try/catch error handling, and better string manipulation. However, after ES3, progress slowed down for several years, largely due to the dominance of Internet Explorer and a lack of focus on web standards.  For a long period of time, JavaScript was plagued by the incompatabilities between various web browser's *implementation* of it's features.  This was particularly problematic when working with more advanced aspects of web development, like AJAX.  
 
-In 2009, the release of ECMAScript 5 (ES5) marked a significant milestone, introducing features like strict mode and JSON support, further solidifying JavaScript’s capabilities. Then, in 2015, ECMAScript 6 (ES6), also known as ECMAScript 2015, was released, bringing major enhancements such as arrow functions, classes, and template literals. This version shifted JavaScript into a more modern programming language, enabling developers to write cleaner and more maintainable code.  As we will discuss below, the advancements in the language itself occured in tandem with significant advancements inthe *performance* of JavaScript runtimes.  From 2008-2015, there was a virtual circle of improvements in the language, it's performance, and it's impact.
+In 2009, the release of ECMAScript 5 (ES5) marked a significant milestone, introducing features like strict mode and JSON support, further solidifying JavaScript’s capabilities. Then, in 2015, ECMAScript 6 (ES6), also known as ECMAScript 2015, was released, bringing major enhancements such as arrow functions, classes, and template literals. This version shifted JavaScript into a more modern programming language, enabling developers to write cleaner and more maintainable code.  As we will discuss below, the advancements in the language itself occured in tandem with significant advancements inthe *performance* of JavaScript runtimes.  
+
+It's fair to say that from 2008-2015, there was a virtuous circle of improvements in the language, it's performance, and it's impact.
 
 ## Node.js - JavaScript without the web browser
-JavaScript evolved as a language strictly within the context of the *web browser*.  The langauge did not have **true** I/O - for most of it's history JavaScript had no concept of writing to the console, writing to files, reading data from your hard drive, etc.  This is for good reason of course, it was assumed that JavaScript code, by definition, was code running on the *end users's* computer, inside a browser, as a result of visiting a web page.  **No one wanted JavaScript** to be able to interact with their machine - because it was inherently untrusted code downloaded from a web server!
+JavaScript evolved as a language strictly within the context of the *web browser*.  The langauge did not have **true** I/O - for most of it's history JavaScript had no concept of writing to the console, writing to files, reading data from your hard drive, etc.  This is for good reason of course, it was assumed that JavaScript code, by definition, was code running on the *end users's* computer, inside a browser, as a result of visiting a web page.  **No one wanted JavaScript** to be able to interact with their machine - it was untrusted code downloaded from a web server!
 
 All that changed in 2009.  Before you get worried, it's not that the obvious security concerns about having a web page's JavaScript interact directly with your computer are now ignored, it's just that we no longer think of JavaScript code *only* within the context of a web browser.
 
@@ -21,7 +23,7 @@ Let's take a step back, and think about another general purpose language with a 
 
 When the Python intepreter encounters a `print` statement in Python, the intepreter interacts *with the operating system*, using *operating system APIs*, in C, to perform the printing operation.  In fact, the Python intepreter can expose C APIs for many operating system resources - the file system, the network interaces (sockets), etc.  This allows Python code to be general purpose - there are Python functions to interface with devices - and those functions are mapped to C APIs the underlying operating system provides.
 
-What does this have to do with JavaScript?  Well, Javascript is similarly cross-platform.  The code is distributed to end users, and the code is run by an intepreter whcih is written in C/C++ (for the most part).  The interpreter, prior to 2009, was generally assumed to be *a web browser*.  The choice *not* to support interfaces to the operating system's APIs was just that - *a choice*.  
+What does this have to do with JavaScript?  Well, Javascript is similarly cross-platform.  The code is distributed to end users, and the code is run by an intepreter which is written in C/C++ (for the most part).  The interpreter, prior to 2009, was generally assumed to be *a web browser*.  The choice *not* to support interfaces to the operating system's APIs was just that - *a choice*.  
 
 ### Google Chrome and the V8 Engine
 Web browsers aren't normally written as monoliths.  Web browsers contain HTML parsing code, HTML/CSS rendering (drawing) code, user input and network code, and JavaScript execution code.  All of these components can be fairly distinct.  The part of Google Chrome (circa 2008) that was responsible for intpereting and executing JavaScript code was a C++ library called the *[V8 Engine](https://v8.dev/)*.  The V8 engine was different than the JavaScript execution libraries found (at the time) in Safari, Firefox, Internet Explorer, and others.   **It was blazingly fast**.  The reasons for this speed are a topic unto themselves, but the V8 library made several important advancements in JavaScript execution inspired from work done for other runtime systems (Java Virtual Machine, .NET CLR, etc), including Just-in-Time compilation.
@@ -29,7 +31,11 @@ Web browsers aren't normally written as monoliths.  Web browsers contain HTML pa
 The dramatic improvement in execution speed, coupled with the ubiquity of JavaScript *developer skills* due to the web, suddenly made JavaScript a more attractive language for people to write *general* programs - distinct from the web.
 
 ### Node.js 
-In 2009, Ryan Dahl released the first version of Node.js.  Node.js is the V8 Engine, but instead of embedding it within a web browser, it is embedded in a command line program called `node`, written in C++, that supports **JavaScript interfaces to operating system APIs**.  That last part of the sentance is what is really important - when you run a Node.js intepreter, you are running a C++ environment that can translation JavaScript code into operating system APIs allowing your JavaScript code to access things like the file system and network devices directly.  These interfaces are exposed via Node.js specific *includes* (`require`) of specific libraries:  `fs`, `net`, etc.  These libraries are not part of standard JavaScript.  They are not available within V8 engines hosted within web browses.  They are hosted by Node.js.  They are just as safe as code written in any other languages - and just as dangerous.  Node.js programs are programs just like C++ programs, Java programs, .NET programs, and Python programs.  They have the same capabilities, and the same abilities to access the host computer.   **They are not distributed via web browsers**.
+In 2009, Ryan Dahl released the first version of Node.js.  Node.js is the V8 Engine, but instead of embedding it within a web browser, it is embedded in a command line program called `node`, written in C++, that supports **JavaScript interfaces to operating system APIs**.  That last part of the sentance is what is really important - when you run a Node.js intepreter, you are running a C++ program that can translation JavaScript code into operating system APIs allowing your JavaScript code to access things like the file system and network devices directly.  These interfaces are exposed via Node.js specific *includes* (`require`) of specific libraries:  `fs`, `net`, etc.  These libraries are not part of standard JavaScript.  They are not available within V8 engines hosted within web browses.  They are hosted by Node.js.  They are just as safe as code written in any other languages - and just as dangerous.  Node.js programs are programs just like C++ programs, Java programs, .NET programs, and Python programs.  They have the same capabilities, and the same abilities to access the host computer.   **They are not distributed via web browsers**.
+
+![V8 Node and Chrome](../images/v8-node-chrome.png)
+
+In the image above, observe the difference in the relationship to the V8 engine and the operating system.  With Google Chrome, V8 executes within the browser process.  The browser is a C++ program, contain several (many) parts.  The browser may interact with the operating system, like any other C++ program - the browser certainly can access network devices, etc.  The browser **does not** expose an interface to V8 that allows JavaScript to interact with the operating system, however.  In the NodeJS diagram, we see C++ extensions within Node JS (a C++ program) that purposely expose interfaces to the operating system.  This *does* allow JavaScript code to interact with devices and the file system.  Node.js *is not a web browser*!
 
 ## Running Node.js Programs
 You will need to install the Node.js runtime on your computer.  You can do so for any platform by visiting the main website for the system - [https://nodejs.org](https://nodejs.org).  There are a few other ways to install Node.js, including using the [NVM](https://github.com/nvm-sh/nvm), which allows you to more easily manage *multiple versions* of Node.js on the same machine.  While this is my *recommended* approach, it's not strictly necessary - you can use the standard install if you wish.
@@ -155,7 +161,7 @@ More importantly however, these examples are about clarifying how memory works i
 
 There are many benefits of this approach, but it is not without it's problems.  It's harder to work with variables when you don't know what data type the hold, for example.  In JavaScript code, developers must take extra care to be aware that variables in their code can have unexpected data types if they are poorly written.  This is the cost of *loosely typed* languages - there are more ways for you to write *incorrect* code!
 
-Now let's look a little deeper into the data types used by JavaScript.
+Now let's look a little deeper into the data types used by JavaScript.  **There are two kinds of types** in JavaScript - *primitives* and *objects*.  Primitives are numbers, strings, booleans, `null` and `undefined`.  They are simple types.  Objects are collections of name/value pairs, they are anything with *properties*.  Objects include arrays, and even *functions* - we'll talk more about these later on.
 
 ### Numbers
 With some caveats (see below), JavaScript takes a very simplistic approach towards numbers.  Numbers are just numbers - there is no distinction between integers and floating point numbers.  There is no distinction between signed and unsigned numbers.  There are no categorizations of magnitudes.  Every number in JavaScript is a 64-bit floating point number - whether you intend to store any number in it, or you are sure you are only going to store the numbers 0, 1, or 2 in it!  There are no `int`, `short`, `long`, `float`, `double` - only "number".  The maxium **absolute** value of all JavaScript numbers is around +/- 1.8 x 10<sup>308</sup> and the minimum **absolute** value is about +/- 5 x 10<sup>-324</sup>.
@@ -177,7 +183,7 @@ console.log(x / z); // Prints -1
 console.log(Infinity == 5/0) // Prints true!
 ```
 
-Furthermore, JavaScript also takes an interesting approach towards representing values that *cannot* be represented.  We know that mathematically, `5/0` is Infinity, but `0/0` is not defined.  It's simply "not a thing" in mathematics.  In JavaScript, `0/0` results in `NaN` - literally **N**ot a **N**umber.  `NaN` is different than `Infinity` and `-Infinity` in that it cannot play nice with any mathematical operation.  `5` + `Infitity` is `Infinity` because that's how the infinite works, but unlike `Infinity`/`Infinity`, which is 1 - anything involving `NaN` is `NaN`.
+Furthermore, JavaScript also takes an interesting approach towards representing values that *cannot* be represented.  We know that mathematically, `5/0` is Infinity, but `0/0` is not defined.  It's simply "not a thing" in mathematics.  In JavaScript, `0/0` results in `NaN` - literally **N**ot a **N**umber.  `NaN` is different than `Infinity` and `-Infinity` in that it cannot play nice with any mathematical operation.  `5` + `Infinity` is `Infinity` because that's how the infinite works, but unlike `Infinity`/`Infinity`, which is 1 - anything involving `NaN` is `NaN`.
 
 ```js
 console.log(NaN/NaN); // Prints NaN
@@ -198,8 +204,9 @@ console.log(x+1) ; // Prints 5.6
 THe `parseFloat` function parses a string and returns a number based on the input.  What happens if the string given to `parseFloat` is
 
 JavaScript also includes a global object `Number` which has several convenience functions and constants attached to it.
+
 ### Strings
-in JavaScript, strings are just strings.  They aren't arrays of characters (as C, C++, JavaScript, and C# think of them).  They are first-class data types.  
+In JavaScript, strings are just strings.  They aren't arrays of characters (as C, C++, JavaScript, and C# think of them).  They are first-class data types.  
 
 Strings are immutable, meaning appending strings creates new strings.  You cannot change individual characters of strings - manipulating them on a character-by-character basis *is* possible using function calls, but each time you modify a string you create a *new* string.  This can have significant performance implications when taken to the extreme.
 
@@ -219,11 +226,113 @@ console.log(s3 > s2); // Prints true because s3 is alphabetically before s2
 console.log(s1 + " - and so is this!") 
 // Prints "This is ok - and so is this! 
 ```
+A more recent addition to JavaScript, string *template literals* allow for easier combination of literal text with variables:
 
+```js
+const x = 5;
+const y = 7;
+const z = x + y;
+
+// Prints "The sum of 5 and 7 is 12"
+console.log( `The sum of ${x} and ${y} is ${z}`);
+```
+String template literals allow for the placement of variables within `${` and `}`.  Template literals **must** be delimited by back tick characters, not single or double quotes.  They are the preferred approach to do most printing.
 
 ### Booleans
+
+
 ### Null and Undefined
-### Equality, Comparison, Coersion
+
+### Promotion / Auto-boxing
+Whenever a student learns the list of *primitives*, they eventually encounter some of the functions often associated with them.  For example:
+
+```js
+const x = 5.829543;
+const y = x.toFixed(2);
+console.log(y); // Prints 5.83
+```
+If you are familiar with the concept of *primitives* from languages like C++ and Java, you may be wondering - how can we use the `.` operator on a primitive!  JavaScript uses *automatic promotion* to objects whenever it needs to - that's how!  By using the `.` operator and calling a function, you are implicitely asking JavaScript to create a corresponding *object*, with appropriate properties to hold both the value, and the methods associated with the type's corresponding object type.  There are object types (in addition to `Array`, `function`) for each primitive - `Number`, `String`, `Boolean`, etc - which define methods.
+
+There are a variety of helpful methods attached to the objects associate with primitives - especially for [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) and [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String).  We'll cover them as we need to - but it's a good idea to take a look.
+
+### Type Coercion
+JavaScript data types have well defined, if not always intuitive, ways of working with all operators.  Let's look at a simple example using the `+` sign:
+
+```js
+console.log(5 + "hello");
+// Prints 5hello
+```
+The example below employs type coercion.  The `+` operator is *defined* for adding together two numbers, and also for concatenating two strings.  It is **not** defined for adding a number to a string, or a string to a number.  In order to evaluate the result of `5 + "hello"`, JavaScript *must* cast/convert one of the operands into a "like" data type. It seems obvious, the `5` is converted to a string `"5"`, and then the string `"5"` is concatenated with `"hello"` to yeild `"5hello"`.
+
+Where things can potentially become confusing is when examining the following:
+
+```js
+console.log(5 + "6");
+// Prints 56
+```
+Why doesn't JavaScript conver the `"6"` into a `6` and perform the arithmetic?  The answer is simple - **not all strings can be converted to numbers**, but all numbers can be converted to strings.  Thus, whenever performing a `+` operation, which is supported by both number and string, we will always get the result of the *string* operation.
+
+But, what about the following?
+
+```js
+console.log(5 * "6");
+// Prints 30
+```
+This is where people coming from other language start to look at JavaScript a little suspiciously.  The 6 **is** converted into a number, and the arithmetic is performed!  Why?  It's actually following the same logic as above, **however** the `*` operator is *only* supported by numbers.  The `*` operator is not defined as string.  JavaScript has no choice but to attempt to convert the `"6"` to a `6`, in an attempt to resolve the expression.
+
+```js
+console.log(5 * "hello");
+// Prints NaN
+```
+Following the same logic, JavaScript *attempts* to convert both sides of the `*` operator to numbers.  `"hello"` cannot be parsed to a number, so it yeilds `NaN`, and then `5 + NaN` yeilds `NaN`.
+
+The above is only a glimpse of how coercion behaves in JavaScript.  Let's take a look in more detail.  We will cover this in multiple phases.
+
+#### Rule 1:  Coercion only applied to primitive types
+Objects (objects, arrays, functions, etc) are never coerced in order to evaluate the results of an operator.  
+
+- For the `==` and `!=` operators, if both sides are objects, then objects are considered equal only if they are pointing to the same location in memory. 
+- For operators that can only work on primitives - which include arithmetic, comparison, and logical operators, **objects** are first turned into primitives - and then *those* primitives can be coerced, if necessary, to evaluate the operator.
+
+#### Rule 2:  Objects are turned into primitives in a pretty simple way
+To convert any object (`obj`) into a primitive, JavaScript first checks if there is a valid `valueOf` method on the object.  If so, it calls it.  If that function returns a primitive, then it's done.  Examples of objects that have a `valueOf` function are the object varieties of primitives - `Number`, `String`, `Boolean`.  
+
+If there is no `valueOf`, or if `valueOf` doesn't return a primitive, then JavaScript tries to call `toString` on the object.  Most objects have a `toString` function, but they are often unimpressive. 
+
+Most generic objects will return `[object ObjectName]` as the string representation - where `ObjectName` is `object` or some specialization.  Some objects do better things:
+- Function objects can return a shortened function name and some representatation of text, rarely useful for anything beyond some simple debugging.
+- The Date object will return a formatted date string
+- The Array object will actually return a string representation of the content. So, for the array [1, 2, 3], the `toString` function actually returns `"1, 2, 3"`.
+- **However** (and this is REALLY important!!!), *empty arrays*, or arrays with a single `null` value in them, will return and **empty** string.  So, the array `[null]` or `[ ]`, if converted to a string with the `toString` function, returns an empty string `""`.  This is a quirk, and is critical to understanding several oddities later on.
+
+If, in the unlikely event that there is no `toString` function, or the `toString` function returns a non-primitive (really bad idea), then an exception is thrown.  This is undefined behavior.
+
+#### Rule 3:  Coercion rules are defined by the operator
+Note, in the following discussion, we are assuming if either operand was an *object*, it has already
+
+- For the `==` and `!=` operators, if both operands are the same type, then no coercion occurs.
+- Otherwise, for `==` and `!=`,  if **either** operand is a number or a boolean, the operands are converted to numbers if possible; else if either operand is a string, the string operand is converted to a number if possible. Note, as discussed above, if **both** operands are objects then no coercion is applied at all - they are compared by examining the location in memory they point to.  If **one** of the operands is an object, then both operands will  be converted to a string.
+- For the `+` operator, **if either side** is a string, the other side is always coerced to a string.  This is why 5 + "5" is  "55".
+- For the `+` opperator, if **neither** side is a string, then both sides must be coerced into numbers, and arithmetic is applied.
+- For the other arithmetic operators (`-`, `*`, `/`, `%`), both sides must be coerced into numbers, and the arithmetic is applied.
+- For expressions that require booleans (`if` and `else if` clauses, or the use of the `!` operator), the expression must result in a boolean value
+
+
+
+
+That probably seems a little complicated.  Once again - **rather than reading a bunch of rules**, EXPERIMENT!  Fire up a code editor, and try some things.  Write `if` statements (see below) to see how things resolve.  You will be surprised - with a little experimentation, you can develop a good intuition.  Try not to just blindly memorize this!
+
+### Equality
+Testing to see if two values are *equal* is a tricky subject in JavaScript.  This because JavaScript employes the type coercion rules defined above to the `==` and `!=` operators.  The way these coercion rules get applied are the source of an unfortunate number of bugs.
+
+The following code uses the `assert` function, which is part of Node.js.  Calling the assert function with anything that resolved to `false` throws an exception.  The following code throws no such exception - **every `assert` expression is actually `true`.
+
+```js
+
+
+```
+
+
 ### Preview of the other types
 Discuss IntArray and more too.  Outside scope, but promised to discussthem.
 ## Declaring Variables (the older way)
@@ -231,3 +340,5 @@ Discuss IntArray and more too.  Outside scope, but promised to discussthem.
 ## Global Variables, Function Scope, and Block Scope
 ## Control Flow Statements (if, switch, while, for)
 
+## Before we go further...
+We are moving quickly through JavaScript.  There are links embedded in the text above to reference material, covering hundreds of functions and features of the language.  The purpose of this chapter is not to be an exhaustive reference for JavaScript - the [Mozilla Developmer Network - MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript) is perfect for that.  The purpose of this chapter is to expose you to the language *concepts* so you can start working with it.  **Please** use the MDN or another resource for reference, and use this chapter for insight!
