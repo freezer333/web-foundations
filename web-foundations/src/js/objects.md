@@ -110,6 +110,7 @@ const o = {
 };
 ```
 It is perfectly natural to do this, and it is quite useful to do so.  Objects are used **extensively** in JavaScript code because they are so easy to create, they are flexible, and once you get the hang of them, very easy to use.
+
 ## Object Properties
 Object property names can be referenced using the `.` operator.  Assignment and referencing works as you'd expect, with the reminder that you can assign properties that don't already exist, and you can also reference properties that don't already exist, without issue.
 
@@ -137,3 +138,79 @@ This code might appear odd (and yes, it's a bit contrived).  We set a variable `
 
 Note that this is different than `o.name`, which would attempt to access the property called `name` - which is undefined.  This literally is accessing either property `a` or `b` based on the *value* of `name`.  
 
+Accessing missing properties results in `undefined`, which in most cases is sufficient to determine whether an object contains a given property.  The following is a common method of checking:
+
+```js
+
+const o = { a: 1 };
+if (o.b) {
+    //has b
+}
+```
+This method can be error prone however, especially given JavaScript's type conversions. A safer way is to explicitely check for `undefined` with the `===`
+
+```js
+const o = {a: 0};
+if (o.a ) {
+    // This will be skipped, because 0 is intepreted as false.
+    // If we were trying to chekc if a EXISTS, this would be 
+    // an incorrect result!
+}
+// Instead, check explicitely for undefined:
+
+if (o.a !== undefined) {
+    // a is present.  Maybe it's 0, but it's there!
+}
+```
+We've seen that we can easily *add* properties, via assignment.  Can we remove them?  We certainly can, and there are two schools of thought.
+
+1. We can use the `delete` keyword.  `delete o.a` removed `a` from the object.  Any subsequent reference of `o.a` will result in `undefined`.
+2. We can also just set `o.a` to be `undefined` - `o.a = undefined`.  This has exactly the same effect, and may be faster - although most modern JavaScript runtime will optimize the inefficiency associated with `delete` away.
+
+The difference between the two methods comes up when we try to *iterate* over all the object property names found in an object - often called the object *keys*.  It also comes up when using the `in` keyword, which is an alternative way to check if object properties are present.
+
+```js
+const o = {
+    a: 10,
+    b: "Hello World",
+    c: null, 
+    d: 20
+};
+
+// This removes a, it's no longer a property in o
+delete o.a;
+// This doesn't remove the property, it sets it to undefined.
+o.b = undefined;
+
+if (o.a !== undefined) {
+    // This will NOT print
+    console.log('o.a is present - check 1');
+}
+if ('a' in o) {
+    // This will NOT print
+    console.log('o.a is present - check 2');
+}
+
+if (o.b !== undefined) {
+    // This will NOT print
+    console.log('o.b is present - check 1');
+}
+if ('b' in o) {
+    // This WILL print
+    console.log('o.b is present - check 2');
+}
+
+// Prints b, c, d - a is not in o, but b still is.
+for (let p in o) {
+    console.log(p)
+}
+
+```
+In the above code, we are clearly demonstrating the difference between `delete` and setting the property to `b`.  It's important to understand the difference.  There's no one right answer, it all depends on context.
+
+## Nested Objects
+
+
+## Serialization and Deserialization
+
+## Methods?
