@@ -25,7 +25,7 @@ Both ways are perfectly acceptable, but when you are trying to do a simple assig
 
 If you write the following ternary expression:
 ```js
-y = (x < 5 && z > 50) ? (x %5 === 0 ? 70 : (z === 10 ? 6 : 9)) : 6
+y = (x < 5 && z > 50) ? (x %5 === 0 ? 70 : (z === 10 ? 6 : 9)) : 6;
 ```
 You should write this:
 
@@ -124,7 +124,7 @@ let count = 0;
 do {
   console.log(`Count is: ${count}`);
   count++;
-} while (count < 5)
+} while (count < 5);
 ```
 
 ## for loops (Part 1)

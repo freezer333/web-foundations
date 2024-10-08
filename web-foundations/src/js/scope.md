@@ -151,8 +151,8 @@ function example() {
 
 // console.log(c) --- would crash, because c hasn't been created
 // yet, it will get created when we execute example
-example()
-console.log(c) // Works, prints 20!
+example();
+console.log(c); // Works, prints 20!
 ```
 
 So, why does JavaScript work this way?  There are lots of explanations, but perhaps the best is this:  *JavaScript was developed for non-programmers to write small snippets of code to do relatively unimportant things on web pages*.  If you think about things from that perspective, some of the insanity of what was just described above may start to makes sense.  Novice programmers don't write a lot of functions in the first place, and certainly not when writing just a small amount of code.  It makes sense to assume they might forget to use the `var` keyword, so automatically creating the variable seems reasonable if they are assigning a value to it.  If the novice programmer tries to read a variable that they never defined, thats obviously an error, and it's a good idea to crash. This design is essentially an overly forgiving way of handling declaration errors.
@@ -183,7 +183,7 @@ function example() {
 
         // Note, this would throw an error, because
         // y is const
-        y+= 5
+        y+= 5;
     }
 }
 ```

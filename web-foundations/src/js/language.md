@@ -45,6 +45,15 @@ JavaScript contains many *keywords*, or *reserved words*, just like other langua
 
 There are other *words* that have special meaning within the execution environment, but are not reserved words themselves.  Things like `console`, `window`, `document`, `alert`, `require` are all *built in* functions and objects within execution environments.  In Node.js, `console` is a built in object that lets you interact with the terminal.  In browsers, `console` serves a similar purpose, but it lets you print to the web development tools.  In Node.js, `require` allows you to import modules (built in, like `fs`, `net` or your own) - while in a web browser `require` is not supported at all.  Web browsers support `window` and `document` to allow access to the rendered content (HTML), and `alert` to interact with the user.  All of this is to say, there are words with *special meaning* in JavaScript programs, but they aren't *keywords*.  They are a bit ambiquous, because their presence depend onthe execution environment itself.  They are objects in the *global* scope, added to you program when it starts.  We'll cover the concept of the *global* scope in more depth a bit later.
 
+**Pro Tip**&#128161; In JavaScript, individual statements on a single line do not **require** a semicolon.
+```js
+const a = 5  // ok, no need for semicolons...
+const b = 6;
+```
+I like to explain to students that, yes, semicolons are **optional**.  They are optional in the same way that *wearing shoes is not required when walking through a major city*.  Is it illegal to walk through New York City barefoot?  No.  Is it smart?  Also no.  Most likely you will step on something sharp and injure yourself, or step on something gross and regret your decision.  You will also look foolish.
+
+There are many reasons leaving `;` off can backfire, and come back to bite you.  They are optional because JavaScript was initially designed with amateur novice programmers in mind - and the thought at the time was that learning to always include the `;` might be too much for them, and lead to a lack of adoption.  This was probably wrongheaded on it's face (the semicolon isn't really the hard part of programming), but it's certainly a concept that the industry has moved away from.  If you intend to be a respected developer, **don't write JavaScript without semicolons**.
+
 ## Data types
 When we create a variable in C, C++, or Java, we specify it's data type directly:
 
@@ -127,7 +136,7 @@ const z = -Infinity;
 console.log(y < 5); // Prints true
 console.log(x == Infinity); // Prints true
 console.log(x / z); // Prints -1
-console.log(Infinity == 5/0) // Prints true!
+console.log(Infinity == 5/0); // Prints true!
 ```
 
 Furthermore, JavaScript also takes an interesting approach towards representing values that *cannot* be represented.  We know that mathematically, `5/0` is Infinity, but `0/0` is not defined.  It's simply "not a thing" in mathematics.  In JavaScript, `0/0` results in `NaN` - literally **N**ot a **N**umber.  `NaN` is different than `Infinity` and `-Infinity` in that it cannot play nice with any mathematical operation.  `5` + `Infinity` is `Infinity` because that's how the infinite works, but unlike `Infinity`/`Infinity`, which is 1 - anything involving `NaN` is `NaN`.
@@ -153,7 +162,7 @@ THe `parseFloat` function parses a string and returns a number based on the inpu
 JavaScript also includes an object `Number` which has several convenience functions and constants attached to it.  One of these is the helpful `isNaN` that takes care of the logical gap you might have noticed when you learned that `NaN` == `NaN` is `false` above!
 
 ```js
-console.log(Number.isNaN(0/0)) // True
+console.log(Number.isNaN(0/0)); // True
 ```
 `Number` is the object version of a number.  You can create instances of a number using a constructor (we'll learn more when we cover objects and classes).  This is rarely done in practice, but it can be a nice way to perform type conversions.  The `Number` class has static methods (like `isNaN`), and also some constants that are useful.  `Number.MAX_SAFE_INTEGER` and `Number.MIN_SAFE_INTEGER` are useful for testing limits (although remember that `-Infinity` and `Infinity` exist too).
 
@@ -232,7 +241,7 @@ const obj = {
     a: 1, 
     b: 3,
     d: null
-}
+};
 ```
 In the code snippet above, we create 4 variables - x, y, and z are regular variables, and `obj` is an object with three properties - `a`, `b`, and `d`.
 
@@ -401,11 +410,11 @@ assert(0 == "");
 // This is false because they are both
 // objects.  Objects are only equal if 
 // they point to the same location in memory
-assert({} != [])
+assert({} != []);
 
 // The empty string is turned into 
 // a string - which results in an empty string 
-assert("" == [])
+assert("" == []);
 
 
 // The - operator forces both sides
@@ -423,8 +432,8 @@ Sometimes, we really just want to know *if two things are exactly the same*.  We
 
 
 ```js
-console.log(5 == "5") // True
-console.log(5 === "5") // False
+console.log(5 == "5"); // True
+console.log(5 === "5"); // False
 ```
 The **strict** equality operator is the **PREFERRED** approach of most programmers.  If you've coded in JavaScript for long enough, you've learned that no matter how well you know the coercion rules, you will eventually get bitten by it.  The use of the `==` and `!=` backfires, resulting in unwanted confusion and mysterious bugs in your code that are very hard to debug.  It's somewhat unfortunate that the *easiest* thing to write - `==` - is the most dangerous, and the harder things to write - `===` is the preferred.  It's a historical accident.  Originally, when JavaScript was being developed for small little programs running on a web page, the easy going nature of `==`'s type coercion was a nice gift to novice programmers.  JavaScript "programs" were a few dozen lines of code.  Debugging wasn't a big issue.  As JavaScript grew up, it became more useful - and thus larger programs.  Larger programs means professional programmers, who know how to use type coercion *when they want it*, and also know it's better to use `===` all the time by default!
 
