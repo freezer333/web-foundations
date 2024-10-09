@@ -1,6 +1,7 @@
 # Form Controls
 The previous section introduced simple text fields and buttons.  The mechanics of how data is sent to the server are important to understand. More importantly, you must understand how forms relate to the request/response cycle of the web.  Pages are rendered, and those pages may have forms.  Users enter data, and *submit* forms, usually by clicking a button.  To submit a form means that the web browser initiates a `GET` or `POST` request, based on the `form` element's `method` attribute, to the url specified by the `form` element's `action` attribute.  The web server, when that request is received, is responsible for performing any necessary processing on that form data, and sending an HTTP response - usually another web page.
 
+
 `form` elements are not limited to just text fields and buttons however. HTML specifies a rich set of user interface controls that we can use within forms.  They all result in defining data that will be submitted with the form they are enclosed in - so the mechanics are all the same.  Whether the form just has one or two text fields, or hundreds of different controls within in, submitting the form will always result in all the data associated with all the controls within it being sent to the server.
 
 Let's take a look at some of the other form controls:
@@ -148,6 +149,13 @@ Here’s an example using `placeholder`:
 
 In this example, the text "Enter your username" appears inside the input field but disappears when the user clicks on the field or starts typing.
 
+**Pro Tip**&#128161; **Note** that `placeholder` is different than setting the `value` attribute.
+
+```html
+<input type="text" name="username" value="Enter your username">
+```
+In the above example, the "Enter your username" text is actually the text written in the input element, and if the user were to submit the form, that text would be submitted.  In order for the user to enter their username, they would need to delete the "Enter your username" text.  The `value` attribute should **never be used as a hint/instruction**, it is only appropriate for actually pre-filling values that may be submitted.  A good use case is when displaying a form that allows the user to edit *existing* information.
+
 While both `placeholder` and `label` help guide users in filling out a form, they serve very different purposes and behave differently. The most significant difference is that while the **placeholder** disappears when the input field is interacted with, a label does not.  For this reason, use placeholders **in addition** to labels, **not instead of labels**.  Placeholders are best used to add hints, or examples - while labels are use to really describe what the user needs to enter.
 
 ```html
@@ -199,12 +207,12 @@ The following attributes are commonly used with `textarea` elements:
 
 ## Universal Attributes
 While we are starting to define more controls, there are a few attributes used with all of the different types - some of which were described breifly above.  Let's take a moment to go over these in
-- `autocomplete`
-- `disabled`
-- `readonly`
-- `required`
-- `name`
-- `id`
+- `autocomplete` - This attribute allows you to nudge the web browser towards autocompleting the form field.  It's available on most form elements.  You can set the value to "on" or "off", and when "on" the web browser will use the label, along with any previous entries the user has made on your site (on the same form) to pre-fill the input field.  Alternatively, you can also specify a sequence of tokens (separated by a space), for example `shipping zip-code`, to provide further hints to the browser.  Note, the web browser is not required to do **anything**, this is only a suggestion.  User's may turn off these features, and different browsers may not support it at all.  For more on the typically supported tokens, and other functionality, see [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete).
+- `disabled` - This is a *boolean* attribute, it's presense indicates that the element should be disabled.  Disabled is different than read only (see below), in subtle ways.  Disabled elements generally visually appear differently - they are often greyed out.  Disabled element indicate to the user that the option is *not available*.  You may set most form elements to disabled.
+- `readonly` - This is a *boolean* attribute, it's presence indicates that the element is read only.  Read only elements generally look the same as other elements, but their state (the text entered, the checked/selected state, etc) is pre-defined and not editable.  `readonly` can be used on most form elements.
+- `required` - This is a *boolean* attribute, and is available on most form elements.  When `required` is present, form submission *may* be prevented if a value has not been specified.  Note that *"may"* here is important.  A web browser is likely to display instructions indicating the form element is required, and it *may* prevent the user from submitting the form if a value is not present, but this **does not replace the need for server side validation**.  Not only is it entirely up to the browser to honor the `required` attribute, but remember - anyone can submit form data using *any* program - so what you receive on the server side isn't necessarily sent from a proper web browser at all!
+- `name` - As we've already seen, the `name` attribute identifies the element, and the value, when sending to the server.  The `name` attribute is **required** if the value of the control will be sent to the server on form submission.  
+- `id` - It's worth noting that it is *common* for all form elements to have an `id`, but not strictly necessary.  There are many features (such as relating `label` to elements) that utilize the `id` element, but they are not directly used when considering form submission itself.
 
 ## Check boxes, Radios
 

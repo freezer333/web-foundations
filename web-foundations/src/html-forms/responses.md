@@ -38,7 +38,14 @@ First, let's establish what this page looks like.  Let's assume it is hosted on 
 
 We'll see how to add labels and all sorts of nice things soon enough - let's just focus on what we see.  The `form` element itself is just a block element, it doesn't have any specific appearance.  There are **three** child elements within it (aside from the new line `br` elements) that are critical to the form.  These are two `input` elements - which are rendered as empty text boxes, and one `button` of **type** submit.
 
-First, understand that when the page is loaded, users can *type* into the two input fields.  Typing into the fields do not cause the browser to take any action at all.  In this form, the `button` element is what will drive browser action.  When the user clicks the button, the web browser responds by following the commands specified within the attributes of the `form` element the button is contained within:
+First, understand that when the page is loaded, users can *type* into the two input fields.  Typing into the fields do not cause the browser to take any action at all. **Input elements can also be pre-initialized**, but setting the `value` attribute directly:
+
+```html
+<input name="first" value="John"/>
+```
+When the input field above is rendered, the text "John" will be pre-filled in the control, but remains editable by the user.
+
+In the form above, the `button` element is what will drive browser action.  When the user clicks the button, the web browser responds by following the commands specified within the attributes of the `form` element the button is contained within:
 
 ```html
 <form action="/destination", method="post">
@@ -301,3 +308,4 @@ Name is not ID
 <hr/>
 
 **Pro Tip**&#128161; One of the most common mistakes new students make is *forgetting* the `form` element. The `form` element is not visible to the user (at least, not unless there is styling).  Often, students will focus on what they see, and create HTML pages with `input` elements *outside* of `form` elements. The page looks just fine, but when the user clicks submit buttons, nothing happens.  Worse yet, sometimes students **do** create a `form` element, but they put the `input` elements *outside* the `form` element!  When you do this, your `form` element might very well submit (provided you've correctly set the `action` and `method` attributes, and included a button of type `submit`) - but the form data associated with elements *outside* the `form` aren't going to be submitted with the request!  **Make sure you understand this concept** - `form` elements are the *container* of any input data you need to send in the form submission request.  User control data only gets submitted with the HTTP request if the user control is within the form being submitted!
+
