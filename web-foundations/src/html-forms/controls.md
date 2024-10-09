@@ -11,9 +11,9 @@ The `input` element is versatile, it is not necessarily just for plain text inpu
 
 Some commonly supported *new* input types are as follows:
 
-- `type="password"` - Passwords - This one isn't new, it's been around forever. An input field with type "password" will display it's characters are masked (usually dots instead of characters).  This is a nice privacy feature, but sometime leads to a false sense of security.  Remember, passwords entered as form elements - whether they are entered into a text input or a password input, are transmitted **in plain text** unless the web site uses HTTPS.  Inputs of type password 
+- `type="password"` - Passwords - This one isn't new, it's been around forever. An input field with type "password" will display it's characters are masked (usually dots instead of characters).  This is a nice privacy feature, but sometime leads to a false sense of security.  Remember, passwords entered as form elements - whether they are entered into a text input or a password input, are transmitted **in plain text** unless the web site uses HTTPS.  Inputs of type password
 - `type="number"` - Number - restricts input to contain numbers.  Accepts a `min` and `max` attribute to set limits on the number, and usually the browser will render the input field with up and down arrows to allow the user to increment/decrement the number (although this isn't required).  The `step` attribute can be used to control the increment used by these arrows.
-- `type="email"` - Email - restricts input to contain an email address, containing a well formed email address.  This input field is not quite as widely supported, many browsers will simply render it as a text box.  The value is that it is easier to take advantage of input validation when you've specifically specified `type=email`, and you are also providing more information for web browsers to pre-populate the form field. 
+- `type="email"` - Email - restricts input to contain an email address, containing a well formed email address.  This input field is not quite as widely supported, many browsers will simply render it as a text box.  The value is that it is easier to take advantage of input validation when you've specifically specified `type=email`, and you are also providing more information for web browsers to pre-populate the form field.
 - `type="url"` - URL - this is similar to email inputs, in that not all browsers will do anything differently.  However, some browsers will restrict the input to be a well qualified URL.
 - `type="tel"` - Telephone number - most browsers will provide some input assitance for users when entering phone numbers - like grouping area code, for example.  Many browser will simply render this as a normal text field however.
 - `type="date"` - Date - Most modern web browsers will render this *initially* as a text box, but when the user clicks the text box to bring it into focus a date picker of some sort will be provided.  This allows for significantly more effective date entry, as opposed to asking the user to enter the date in as free-form text.  Because date entry is *so* problematic in plain text, most modern browsers to provide *some level of enhanced support for date inputs*.
@@ -28,50 +28,58 @@ Here are some examples of these in action.  Note, browsers are free to support e
     <!-- Text Input -->
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" placeholder="Enter your username">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Password Input -->
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" placeholder="Enter your password">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Number Input -->
     <label for="age">Age:</label>
     <input type="number" id="age" name="age" min="1" max="100" placeholder="Enter your age">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Email Input -->
     <label for="email">Email Address:</label>
     <input type="email" id="email" name="email" placeholder="Enter your email">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- URL Input -->
     <label for="website">Website:</label>
     <input type="url" id="website" name="website" placeholder="https://example.com">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Telephone Input -->
     <label for="phone">Phone Number:</label>
     <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Date Input -->
     <label for="dob">Date of Birth:</label>
     <input type="date" id="dob" name="dob">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Time Input -->
     <label for="meeting">Meeting Time:</label>
     <input type="time" id="meeting" name="meeting">
-    <br><br>
+    <br/>
+    <br/>
 
     <!-- Color Input -->
     <label for="favcolor">Favorite Color:</label>
     <input type="color" id="favcolor" name="favcolor">
-    <br><br>
+    <br/>
+    <br/>
 
-    <!-- Submit Button -->
-    <input type="submit" value="Submit">
+    <button type="submit">Submit</button>
 </form>
 ```
 ![Control types](../images/control-types.png)
@@ -83,13 +91,13 @@ There are a few more, and we will cover types `checkbox`, `radio`, `file`, `hidd
 ## Labels & Placeholders
 You might have noticed the use of `label` in the examples above. The `<label>` element in HTML forms is used to provide descriptive text for form controls, such as `<input>` elements, improving both **usability** and **accessibility** of forms. The main purpose of the `<label>` element is to ensure that users — especially those with disabilities — can easily understand the purpose of form fields. Associating a label with an `<input>` element makes forms more user-friendly and accessible across different devices and assistive technologies.
 
-1. **Clear Identification of Form Fields**:  
-   The `<label>` element helps users quickly identify the purpose of form controls. For example, a form might have multiple input fields, and without labels, users might be confused about what information is expected in each field.   
-2. **Clickable Label for Easier Interaction**:  
+1. **Clear Identification of Form Fields**:
+   The `<label>` element helps users quickly identify the purpose of form controls. For example, a form might have multiple input fields, and without labels, users might be confused about what information is expected in each field.
+2. **Clickable Label for Easier Interaction**:
    When a `<label>` is correctly associated with an `<input>` element, clicking on the label will automatically focus the corresponding input field. This improves the user experience by increasing the clickable area, especially in cases where the form control (like a small checkbox or radio button) is hard to click.
-3. **Screen Reader Support**:  
+3. **Screen Reader Support**:
    Associating a `<label>` with an `<input>` ensures that screen readers can read out the label when the input field is focused. This is crucial for users with visual impairments who rely on screen readers to navigate forms.
-4. **Improves Keyboard Navigation**:  
+4. **Improves Keyboard Navigation**:
    Labels help improve form navigation for users who rely on keyboards rather than a mouse. When navigating a form via the keyboard (using the Tab key), a screen reader or accessibility tool will correctly announce the label when the corresponding input field is focused.
 
 ### Associating `<label>` with `<input>` Elements
@@ -123,11 +131,11 @@ Both methods are valid, but using the `for` and `id` approach is generally prefe
 ### Browser Behavior
 
 When a `<label>` is properly associated with an `<input>` element, browsers provide the following enhancements:
-1. **Clickable Labels**:  
+1. **Clickable Labels**:
    Clicking the label automatically moves the focus to the associated input field, making it easier for users to interact with smaller form controls like checkboxes or radio buttons.
-2. **Focus Support for Accessibility**:  
+2. **Focus Support for Accessibility**:
    Screen readers and other assistive technologies will automatically announce the label’s text when the input field is focused. This provides crucial information for visually impaired users about what information is expected.
-3. **Styling Consistency**:  
+3. **Styling Consistency**:
    Most browsers apply some basic styling to form controls, and associating a label with an input field helps ensure that label and input combinations are consistently styled across different browsers.
 
 ## The `placeholder` Attribute
@@ -165,15 +173,15 @@ The `<textarea>` element in HTML is used to create a multi-line text input field
 
 ### Key Differences Between `<textarea>` and `<input type="text">`
 
-1. **Content Placement**:  
+1. **Content Placement**:
    - **`<input type="text">`**: The user input is placed as a value attribute, such as `value="user text"`.
    - **`<textarea>`**: The text goes inside the element tags. For example, `Enter your message here...` appears inside the opening and closing `<textarea>` tags.
 
-2. **Multi-line vs. Single-line**:  
+2. **Multi-line vs. Single-line**:
    - **`<textarea>`**: Supports multiple lines of text input.
    - **`<input type="text">`**: Only supports single-line text input.
 
-3. **Resizable**:  
+3. **Resizable**:
    - **`<textarea>`**: Can usually be resized by the user (depending on browser support and CSS settings).
    - **`<input type="text">`**: Has a fixed size unless adjusted through CSS.
 
@@ -189,17 +197,77 @@ The following attributes are commonly used with `textarea` elements:
 8. **`required`**: (optional) Indicates that the field must be filled out before submitting the form.
 
 
+## Universal Attributes
+While we are starting to define more controls, there are a few attributes used with all of the different types - some of which were described breifly above.  Let's take a moment to go over these in
+- `autocomplete`
+- `disabled`
+- `readonly`
+- `required`
+- `name`
+- `id`
+
 ## Check boxes, Radios
 
 
 ## Selects
+Radio buttons are a good strategy for when users need to choose *one* among several choices, however when there are more than 3-4 choices, radio buttons are problematic.  They occupy a lot of screenspace, and can lead to usability issues.  When there are more than 4 choices to choose from, and especially when there are many choices, a *drop down* selection control is generally more effective. Not only do they require less screen space, but for mobile devices browsers will use the device's built in dial controls for easy and egonomic selection.
 
+The *select* control is created with the `select` element.  The `select` element contains child `option` elements, each with a `value` attribute and text content within them.
+
+```html
+<select name="mychoice">
+    <option value="choice-1"> Choice 1 </option>
+    <option value="choice-2"> Choice 2 </option>
+    <option value="choice-3"> Choice 3 </option>
+</select>
+```
+![Select](../images/input-select.png)
+
+While checkboxes and radio controls can be pre-selected using the boolean `checked` attribute, the `select` element is pre-selected by adding a boolean `selected` attribute to the desired `option` element.  Otherwise, the first option is preselected
+
+```html
+<select name="mychoice">
+    <option value="choice-1"> Choice 1 </option>
+    <option value="choice-2" selected> Choice 2 </option> <!-- Preselected choice-->
+    <option value="choice-3"> Choice 3 </option>
+</select>
+```
+Sometimes, if we want "no choice" to be pre-selected, developers will include a false placeholder option, with an absent value.  If the form is submitted with this option selected, no value is sent to the server.
+
+```html
+<select name="mychoice">
+    <option value=""></option> <!-- Preselected choice since it's first, an no others have selected attribute -->
+    <option value="choice-1"> Choice 1 </option>
+    <option value="choice-2"> Choice 2 </option>
+    <option value="choice-3"> Choice 3 </option>
+</select>
+```
+Otherwise, whichever `option` element is currently selected, it's `value` will be sent to the server as a name value pair, using the `name` attribute on the `select` element. In this way, to the server, the name / value pair sent is identical as it would be with a named `input` control.  There is no special processing or consideration required.  In the `select` control above, if "Choice 2" were selected when the form was submitted, the pair `mychoice=choice-2` would be sent to the server.
+
+### Multiple Selection
+Select boxes can also be transformed into *multiple selection* controls.   This allows user to select one or more items within the list of choices.  This is achieved by adding the boolean `multiple` attribute.
+
+```html
+<select name="mychoice" multiple>
+    <option value="choice-1"> Choice 1 </option>
+    <option value="choice-2" selected> Choice 2 </option>
+    <option value="choice-3"> Choice 3 </option>
+    <option value="choice-4" selected> Choice 4 </option>
+    <option value="choice-5"> Choice 5 </option>
+</select>
+```
+![Multiple select](../images/input-select-multiple.png)
+
+A user can select any number of choices, selecting multiple by holding the shift key while clicking on choices.  When the form is sent to the server, each value selected will be sent as a separate name/value pair.  For example, if "Choice 2" and "Choice 4" are selected, the request body (or query string) will contain `mychoice=choice-2&mychoice=choice4`.  Note that the code used on the server side must appropriately handle duplicated names found in the request body.  Our initial example in the previous section does not do this!  As we will see soon, in most cases you will use a library to handle this (and many other) cases, but hopefully you understand that doing this type of processing is not particularly challenging - it just requires a bit more code!
+
+Generally speaking, `select` is a good choice when there are up to a dozen or so choices to make.  The use of `multiple` is appropriate in cases where multiple choices are possible, however checkboxes might be an easier method for most users in this case.  For many, many choices, alternative methods are recommended for usability.  This include things like
+
+See the [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) reference for more information, including option groups,
 
 ## Button Types
 We've already seen the "submit" button, `<button type="submit">Submit</button>`.  We also discussed breifly the concept of having a button of type `button`, which does not cause the browser to take any action at all.  We will revisit this later in the book when we cover client-side JavaScript.
 
 There are actually two different styles of creating *submit* buttons:
-
 
 In HTML forms, buttons are used to trigger various actions such as submitting a form, resetting form fields, or performing custom JavaScript tasks. There are different types of buttons available, each designed to perform a specific function. Here are the main button types:
 
@@ -216,7 +284,7 @@ There is a third type of button - `type="reset"`.  The reset button is an often 
 ```
 
 ## File Controls
-The `<input type="file">` element allows users to select and upload files from their device. Typically, the browser will opens a file picker that allows users to choose one or more files for upload. The concept is simple, but the implementation can be a bit more challenging.  
+The `<input type="file">` element allows users to select and upload files from their device. Typically, the browser will opens a file picker that allows users to choose one or more files for upload. The concept is simple, but the implementation can be a bit more challenging.
 
 The first deviation from the *standard form* elements we've been using is that the form must use the `enctype="multipart/form-data"` encoding type to handle file uploads correctly.
 ```html
@@ -229,7 +297,7 @@ The first deviation from the *standard form* elements we've been using is that t
 ```
 Forms with file upload controls *must* be `POST`, and must have the `multipart/form-data` `enctype` attribute.  This encoding type allows the browser to send the file data as part of the form submission, along side other data fields.  It shouldn't be surprising that sending files, over HTTP (inside the POST request body), as plain text, requires encoding. . The `enctype` is what is handling this.
 
-We've already seen how the web server can parse the request body, and extract name/value pairs.  When using `multipart/form-data` encoding, this also becomes more complex. While we can absolutely write our own parser for HTTP request bodies containing `multipart/form-data`, we will defer this to after we learn about `npm` modules. This will allow us to bring in industry-standard file parsers rather than writing the code ourselves.  
+We've already seen how the web server can parse the request body, and extract name/value pairs.  When using `multipart/form-data` encoding, this also becomes more complex. While we can absolutely write our own parser for HTTP request bodies containing `multipart/form-data`, we will defer this to after we learn about `npm` modules. This will allow us to bring in industry-standard file parsers rather than writing the code ourselves.
 
 ## Hidden Inputs
 THE MOST OFTEN FORGOTTEN, AND UNDERAPPRECITED ELEMENT - HIDDEN!
