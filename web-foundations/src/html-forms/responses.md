@@ -45,6 +45,8 @@ First, understand that when the page is loaded, users can *type* into the two in
 ```
 When the input field above is rendered, the text "John" will be pre-filled in the control, but remains editable by the user.
 
+`input` elements are **empty** elements.  They are **self-closing**.  They must be written as one opening and self closing tag.  `<input ... />` not `<input>...</input>`.
+
 In the form above, the `button` element is what will drive browser action.  When the user clicks the button, the web browser responds by following the commands specified within the attributes of the `form` element the button is contained within:
 
 ```html
@@ -113,7 +115,7 @@ const parse_form_data = (data) => {
 }
 
 ```
-Now let's take a look at the code that is actually handling the HTTP requests.  The `handle_request` function accepts a `req` object representing the request, and a `res` object representing the response.  The `handle_request` function is *registered* as the function that called by the http server.  You can see this happening at the very bottom - 
+Now let's take a look at the code that is actually handling the HTTP requests.  The `handle_request` function accepts a `req` object representing the request, and a `res` object representing the response.  The `handle_request` function is *registered* as the function that called by the http server.  You can see this happening at the very bottom -
 `http.createServer(handle_request)`.
 
 The `handle_request` function is a first look at the type of *branching* we ultimately need to do in response to a request.  Our web servers will do different things, based on if the request is `GET` or `POST`, and based on which URL it is to.
@@ -132,7 +134,7 @@ const handle_request = (req, res) => {
                             <br/>
                             <button type="submit">Submit</button>
                         </form>`);
-    } 
+    }
     else if (req.method.toUpperCase() === 'POST' && req.url === '/destination') {
         // The request body is streamed to our code, we need to register
         // a handler for the data.
@@ -140,12 +142,12 @@ const handle_request = (req, res) => {
         req.on('data', (chunk) => {
             // This function gets called as chunks of data arrive.
             // In our case, it's probably just one chunk since
-            // we have such little data, but we still need 
+            // we have such little data, but we still need
             // to handle it using a callback like this (for now).
             body += chunk;
         });
 
-        // Eventually, the stream of data arriving from the browser (the 
+        // Eventually, the stream of data arriving from the browser (the
         // request body) will end.  We register a function to be called
         // when that event occurs.
         req.on('end', () => {
@@ -153,7 +155,7 @@ const handle_request = (req, res) => {
             // The request body will look like this:
             // first=something&last=something
             body = parse_form_data(body);
-            // We need to respond with an HTML page, let's just make 
+            // We need to respond with an HTML page, let's just make
             // it have the data posted.
             send_page(res, `<p>Welcome ${body.first} ${body.last}</p>`);
         });
@@ -167,7 +169,7 @@ const handle_request = (req, res) => {
 
 http.createServer(handle_request).listen(8080);
 ```
-The more complicated path is when the request is a `POST` for `/destination`.  Here we need to process the incoming request a little more carefully.  By default the `http` library will parse the HTTP request start line, and all header fields, and it makes them available on the `req` object.  That's where we get the `req.method` and `req.url` properties from.  The request *body* however is handled differently.  Since HTTP request bodies can be *arbitrary* length, the `http` library exposes the body as a data *stream*.  It's mimicking how the underlying socket works, where the request body is being read from the socket as as stream of characters.  
+The more complicated path is when the request is a `POST` for `/destination`.  Here we need to process the incoming request a little more carefully.  By default the `http` library will parse the HTTP request start line, and all header fields, and it makes them available on the `req` object.  That's where we get the `req.method` and `req.url` properties from.  The request *body* however is handled differently.  Since HTTP request bodies can be *arbitrary* length, the `http` library exposes the body as a data *stream*.  It's mimicking how the underlying socket works, where the request body is being read from the socket as as stream of characters.
 
 To accomplish request body processing, we must tap into this stream.  The `req.on` function allows us to *register* function handlers for when data arrives, and also when the stream has ended.  The underlying `http` library will handle the detection of stream end - usually using the `Content-Length` header, but potentially using HTTP 1.1 chunking, etc.
 
@@ -196,7 +198,7 @@ This message is indicating that clicking "Refresh" will result in the `POST` req
 Sometimes, instead of rendering a page in response to a form submission, the web server instead **issues a redirect** to a landing page.  Redirects (300 level responses) cause the browser to issue a `GET` request to the new location (set by the `location` header in the 300 response).  The advantage is that now a browser "Refresh" is just repeating a `GET`. The **disadvantage** is that the redirect loses context.  Unlike our result page above that contains the form data that was posted, a  redirect will issue a brand new `GET` request, and the server will need to respond by creating an HTML page - but it no longer has the HTTP request body from the previous `POST`.  There are solutions to this (for example, the `POST` may have stored data to a database, which can be retrieved when rendering the response to the new redirected `GET`), but we'll wait to see them for a bit.
 
 ### POST or GET
-HTML forms are *often* configured to result in HTTP `POST` messages.  In the example above, we set `method`equal to `post` to specify this.  We learned in the HTTP chapter that there are other HTTP methods - `GET`, `PATCH`, `PUT`, `DELETE`.  `PATCH`, `PUT`, and `DELETE` **are not** supported by HTML forms, *however*, `GET` certainly is.  
+HTML forms are *often* configured to result in HTTP `POST` messages.  In the example above, we set `method`equal to `post` to specify this.  We learned in the HTTP chapter that there are other HTTP methods - `GET`, `PATCH`, `PUT`, `DELETE`.  `PATCH`, `PUT`, and `DELETE` **are not** supported by HTML forms, *however*, `GET` certainly is.
 
 Recall that an HTTP `POST` message may contain a *message body*, while a `GET` request cannot. So how would we have a `form` element that uses `GET` to submit it's data?
 
@@ -230,15 +232,15 @@ const handle_request = (req, res) => {
                             <br/>
                             <button type="submit">Submit</button>
                         </form>`);
-    } 
+    }
     else if (req.method.toUpperCase() === 'GET' && req.url.startsWith('/destination')) {
         // The url is going to be /destination?first=A&last=B, so we need to compare
         // with startsWith, rather than an exact match
         console.log(req.url);
         if (req.url.indexOf('?')) {
-            // Give parse_form_data the part of the url AFTER the ? symbol.  
+            // Give parse_form_data the part of the url AFTER the ? symbol.
             // Form data in the POST request body is formatted the same way
-            // as a query string in a GET message is, so we can reuse the same 
+            // as a query string in a GET message is, so we can reuse the same
             // code.
             body = parse_form_data(req.url.split('?')[1]);
             send_page(res, `<p>Welcome ${body.first} ${body.last}</p>`);
@@ -279,7 +281,7 @@ Most forms are submitted with `POST`, but you should always make the decision co
 ### Buttons
 You might be wondering, why do we need to put `type="submit"` in the `button` element. The reason is actually *a bit* more complicated than it should be.
 
-`button` elements are *controls*, and they do not necessarily always need to cause a form submission.  When we learn more about JavaScript (on the client), we will learn how to execute JavaScript code when buttons are clicked.  This JavaScript may or may not need to interact with the web server at all - we don't want the web browser to take any action on our behalf, we just want our JavaScript code to run.  For those kinds of buttons, we will use `type="button"` instead of `type="submit"`.  
+`button` elements are *controls*, and they do not necessarily always need to cause a form submission.  When we learn more about JavaScript (on the client), we will learn how to execute JavaScript code when buttons are clicked.  This JavaScript may or may not need to interact with the web server at all - we don't want the web browser to take any action on our behalf, we just want our JavaScript code to run.  For those kinds of buttons, we will use `type="button"` instead of `type="submit"`.
 
 According to the HTML standard, `type` attribute is **required** on the `button` element - but web browsers genenerally accept that if you leave the attribute off, it will treat the button *as if* it is of type "button".  This feels like a good approach - this way, if the author of the web page doesn't add a `type` attribute, the button click results in *no action* by the web browser.  This feels like a good approach *today*, but in the earlier years of web development - when buttons almost *always* were for form submission - browser made other assumptions. For example, most versions of Internet Explorer treated a `button` without a `type` as having `type="submit"`!  This led to web pages potentially working very differently on different browsers - which is always bad news!
 
@@ -308,4 +310,3 @@ Name is not ID
 <hr/>
 
 **Pro Tip**&#128161; One of the most common mistakes new students make is *forgetting* the `form` element. The `form` element is not visible to the user (at least, not unless there is styling).  Often, students will focus on what they see, and create HTML pages with `input` elements *outside* of `form` elements. The page looks just fine, but when the user clicks submit buttons, nothing happens.  Worse yet, sometimes students **do** create a `form` element, but they put the `input` elements *outside* the `form` element!  When you do this, your `form` element might very well submit (provided you've correctly set the `action` and `method` attributes, and included a button of type `submit`) - but the form data associated with elements *outside* the `form` aren't going to be submitted with the request!  **Make sure you understand this concept** - `form` elements are the *container* of any input data you need to send in the form submission request.  User control data only gets submitted with the HTTP request if the user control is within the form being submitted!
-

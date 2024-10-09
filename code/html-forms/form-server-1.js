@@ -38,6 +38,25 @@ const parse_form_data = (data) => {
     return form;
 }
 
+
+if (req.method.toUpperCase() === 'GET' && req.url === '/first') {
+    // Get number of seconds since Jan 1, 1970
+    const now = (new Date())e.getUTCSeconds();
+    
+    send_page(res, `<form action="/second", method="get">
+                        <input name="first", type='number' value='${now}'/>
+                        <br/>
+                        <button type="submit">Got to Second Page</button>
+                    </form>`);
+}
+else if (req.methos.toUpperCase() === 'GET' && req.url === '/second') {
+    // Form data submitted on query string, since it's GET
+    const body = parse_form_data(req.url.split('?')[1]);
+    const now = (new Date())e.getUTCSeconds();
+    const seconds_since_first = now - parseInt(body.first);
+    send_page(res, `<p>Second between page views:  ${seconds_since_first}</p>`);
+}
+
 const handle_request = (req, res) => {
     if (req.method.toUpperCase() === 'GET' && req.url === '/') {
         // This a GET request for the root page - which is the HTML that
