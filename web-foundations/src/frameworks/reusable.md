@@ -1,7 +1,7 @@
 # Reusable Modules
 We built a lot of code in the last section that hopefully seems useful to you.  As in any language, code reuse is valued in JavaScript, and can be supported by allowing programs to be split up into multiple files.
 
-JavaScript has a long and thorny history allowing developers to *include* other files however.  Unlike other langauges (C++ for example), the langauge itself originally lacked any mechanism for linking/including additional source code.  This is because JavaScript became a programming langauge *for web browsers*, and *for short programs*.  We will learn how we can add JavaScript to HTML pages loaded in a web browser later, buy for now take a look at this HTML for some perspective:
+JavaScript has a long and thorny history allowing developers to *include* other files however.  Unlike other langauges (C++ for example), the langauge itself originally lacked any mechanism for linking/including additional source code.  This is because JavaScript became a programming langauge *for web browsers*, and *for short programs*.  We will learn how we can add JavaScript to HTML pages loaded in a web browser later, but for now take a look at this HTML for some perspective:
 
 
 ```html
@@ -190,7 +190,8 @@ Let's move the parsing and routing code into a separate file now, called `framew
 ```js
 const qs = require('querystring');
 
-const Parser {
+class Parser {
+    #schema;
     constructor(schema = []) {
         this.#schema = schema;
     }
@@ -237,8 +238,8 @@ class QueryParser extends Parser {
     }
 }
 class BodyParser extends Parser {
-    constructor() {
-        super();
+    constructor(schema) {
+        super(schema);
     }
     async parse(req) {
         return new Promise((resolve, reject) => {
@@ -267,7 +268,7 @@ class Route {
         this.path = path;
         this.handler = handler;
         this.has_query = query;
-        this.has_body = false;
+        this.has_body = body;
         this.schema = schema;
 
         if (this.has_query) {
@@ -317,7 +318,7 @@ class Router {
     }
     async on_request(req, res) {
         for (const route of this.routes) {
-            if (route.match(req)) {
+            if (route.matches(req)) {
                 route.serve(req, res);
                 return;
             }
@@ -384,7 +385,7 @@ const router = new Framework.Router();
 router.get('/', serve_home_page);
 router.get('/person', serve_person_form);
 router.post('/person', render_person_response, true, schema);
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 ```
 If we want to use Framework in another program, you just copy the file into that program's directory, and you're all set!
 

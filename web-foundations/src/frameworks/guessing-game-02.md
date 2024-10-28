@@ -42,7 +42,7 @@ const make_guess_page = (secret, result) => {
             ${message}
             <label for="guess">Enter your guess:</label>
             <input name="guess" placeholder="1-10" type="number" min="1" max="10"/>
-            <input name="secret" type="hidden" value="${secret}/>
+            <input name="secret" type="hidden" value="${secret}"/>
             <button type="submit">Submit</button>
         </form>
         <a href="/history">Game History</a>
@@ -69,11 +69,11 @@ const schema =[
     { key: 'secret', type: 'int' }
 ];
 
-const router = new Framework.Router(qp, bp);
+const router = new Framework.Router();
 router.get('/', start);
 router.post('/', guess, true, schema);
 
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 ```
 
 ## Game History - and no cheating!
@@ -83,6 +83,7 @@ Recall, in the example above, if you do a "View Source" in your web browser, you
 
 ```js
 class Game {
+    #secret;
     constructor (id) {
         this.id = id;
 
@@ -108,7 +109,7 @@ class Game {
             this.complete = true;
             this.time = new Date();
         }
-        return guess_response(user_guess);
+        return this.guess_response(user_guess);
     }
 }
 ```
@@ -135,7 +136,7 @@ const make_guess_page = (game, result) => {
             ${message}
             <label for="guess">Enter your guess:</label>
             <input name="guess" placeholder="1-10" type="number" min="1" max="10"/>
-            <input name="gameId" type="hidden" value="${game.id}/>
+            <input name="gameId" type="hidden" value="${game.id}"/>
             <button type="submit">Submit</button>
         </form>
         <a href="/history">Game History</a>
@@ -151,7 +152,7 @@ const start = (req, res) => {
 }
 
 const guess = async (req, res) => {
-    const game = games.find((g) => g.id === gameId);
+    const game = games.find((g) => g.id === req.body.gameId);
     if (!game) {
         res.writeHead(404);
         res.end();
@@ -171,11 +172,11 @@ const schema =[
     { key: 'gameId', type: 'int' }
 ];
 
-const router = new Framework.Router(qp, bp);
+const router = new Framework.Router();
 router.get('/', start);
 router.post('/', guess, true, schema);
 
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 
 ```
 
@@ -195,16 +196,14 @@ const history = (req, res) => {
             <thead>
                 <tr>
                     <th>Game ID</th>
-                    <th>Complete</th>
                     <th>Num Guesses</th>
-                    <th>Started</th>
+                    <th>Completed</th>
                 </tr>
             </thead>
             <tbody>
-                ${games.map(g => `
+                ${games.filter(g => g.complete).map(g => `
                     <tr>
                         <td><a href="/history?gameId=${g.id}">${g.id}</a></td>
-                        <td>${g.complete ? "Yes" : ""}</td>
                         <td>${g.guesses.length}</td>
                         <td>${g.time}</td>
                     </tr>
@@ -217,12 +216,12 @@ const history = (req, res) => {
     send_page(res, html);
 }
 
-const router = new Framework.Router(qp, bp);
+const router = new Framework.Router();
 router.get('/', start);
 router.post('/', guess, true, schema);
 router.get('/history', history);
 
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 
 ```
 
@@ -254,7 +253,7 @@ const game_history = (req, res) => {
                 ${game.guesses.map(g => `
                     <tr>
                         <td>${g}</td>
-                        <td>${game.guess_response(g)}</td>
+                        <td>${game.guess_response(g) ? game.guess_response(g) : 'success'}</td>
                     </tr>
                 `).join('\n')}
             </tbody>
@@ -265,7 +264,7 @@ const game_history = (req, res) => {
     send_page(res, html);
 }
 
-const router = new Framework.Router(qp, bp);
+const router = new Framework.Router();
 router.get('/', start);
 router.post('/', guess, true, schema);
 router.get('/history', history);
@@ -274,7 +273,7 @@ router.get('/history', history);
 // Note, we are inlining a different schema, just used for this page.
 router.get('/history', game_history, true, [{key: gameId, type: 'int', required: true}]);
 
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 ```
 
 Take a look at the [source code](guessing-game-framework.zip) for this program in it's entirety.  It's extremely informative, and we will be building up on these idea throughout the next chapters!

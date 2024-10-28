@@ -53,7 +53,7 @@ We could consider creating a set of objects to make this process more clear, and
 ```js
 const qs = require('querystring');
 
-const Parser {
+class Parser {
     constructor() {
         // Nothing to do yet
     }
@@ -73,8 +73,8 @@ class QueryParser extends Parser {
     }
 }
 class BodyParser extends Parser {
-    constructor() {
-        super();
+    constructor(schema) {
+        super(schema);
     }
     async parse(req) {
         return new Promise((resolve, reject) => {
@@ -154,7 +154,8 @@ This schema can be used to validate query strings and request bodies.  It can be
 
 const qs = require('querystring');
 
-const Parser {
+class Parser {
+    #schema; // declares a private member variable.
     constructor(schema = []) {
         this.#schema = schema;
     }
@@ -204,8 +205,8 @@ class QueryParser extends Parser {
     }
 }
 class BodyParser extends Parser {
-    constructor() {
-        super();
+    constructor(schema) {
+        super(schema);
     }
     async parse(req) {
         return new Promise((resolve, reject) => {
@@ -320,7 +321,7 @@ class Route {
         this.path = path;
         this.handler = handler;
         this.has_query = query;
-        this.has_body = false;
+        this.has_body = body;
         this.schema = schema;
 
         if (this.has_query) {
@@ -376,7 +377,7 @@ class Router {
     }
     async on_request(req, res) {
         for (const route of this.routes) {
-            if (route.match(req)) {
+            if (route.matches(req)) {
                 route.serve(req, res);
                 return;
             }
@@ -479,10 +480,12 @@ const router = new Router();
 router.get('/', serve_home_page);
 router.get('/person', serve_person_form);
 router.post('/person', render_person_response, true, schema);
-http.createServer(router.on_request).listen(8080);
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 
 ```
 Clearly, the above code listing is incomplete, since we'd also need to include the source code for the parsers, the route class, and the router.  But look at that code carefully.  **All of it is unique to the application**, very little of it would be considered "common" to all web server.  We've effectively *factored out* all of the HTTP parsing and routing.  You can easily imagine factoring out some of the HTML generation code (`writeHead`, `write`, `end` calls), as we've done in the past too.
+
+**Pro Tip**&#128161; Did you notice that `http.createServer` isn't being called with `router.on_request` directly, but rather with a wrapper function?  This is because `createServer` accepts regular functions, not member functions of class instances.  Just like in most object oriented languages, there's a difference between standalone functions and member functions.  In this case, if you were to pass `router.on_request` directly to `createServer`, when it is called, the `this` variable used withing `router.on_request` would not be defined - because the context of the instance was lost.
 
 Now let's see how we can avoid ever writing all that code again, by putting it into separate files.
 

@@ -47,13 +47,20 @@
     - [Asynchronous Programming and Callbacks](./async-js/callbacks.md)
     - [Promises](./async-js/promises.md)
     - [Async and Await](./async-js/async-await.md)
+
 - [Routing, Routers, and a Framework](./frameworks/frameworks.md)
     - [Matching and Routing](./frameworks/matching-routing.md)
     - [Modules](./frameworks/reusable.md)
     - [Guessing Game - Version 2](./frameworks/guessing-game-02.md)
-- [The NPM Ecosystem](./npm.md)
-    - [Using NPM](./using-npm.md)
-    - [Publishing to NPM](./publishing-to-npm.md)
-- [Working with Databases](./database.md)
+
+- [Working with Databases](./database/database.md)
+    - [Working with Databases](./database/working-with-databases.md)
+    - [Database maintenance](./database/db-maintenance.md)
+    - [The Guessing Game Database](./database/db-app.md)
+
+- [The NPM Ecosystem](./npm/npm.md)
+    - [Using NPM](./npm/using-npm.md)
+    - [Publishing to NPM](./npm/publishing-to-npm.md)
+
 - [Templating](./templating.md)
 - [Express Framework](./express.md)
