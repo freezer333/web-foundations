@@ -56,6 +56,8 @@ Note, web applications generally use database *servers* - separate processes.  T
 ## Getting Started with SQLite
 We are going to cover databases entirely through example - and that example will be the *guessing game* application.  Before we do anything with our application code, we need to *create* a database using SQLite.  While eventually we will actually do this step *through Node.js code*, we are going to start out doing this outside of our application - using the SQLite command line tool itself.
 
+**Pro Tip**&#128161; **If you haven't read the previous chapter, please do so now - because we are going to be using the code from that chapter here!**
+
 First step - download SQLite and install on your platform.  You can find downloads and instructions for all major platforms [here](https://www.sqlite.org/download.html).  **Note**, download SQLite means downloading the SQLite command line tool - there is no "database server", there's just a C library.  The command line tool is a command line (terminal) user interface for creating SQL commands, and invoking the C library code to execute the SQL commands themselves.
 
 Once you've downloaded it, you should be able to type the following on your command line or terminal:
@@ -116,38 +118,443 @@ There's no reason to keep exiting `sqlite3`, you can continue to add things, and
 ## Accessing SQLite from Node.js
 You should have already created a dedicated directory on your machine for the application we are building in this section, and `guess.db` should be the only file in it.
 
-Next, copy the `framework.js` and `guess.js` files from the previous chapter's final example.  You can find that source code in it's entirety [here](../../../code/guessing-game-first-framework/)
+Next, copy the `framework.js` and `guess.js` files from the previous chapter's final example.  You can find that source code in it's entirety [here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-first-framework)  [TODO - GITHUB CODE]
+
+Now let's get started with changing the application to use *persistant* storage for the game and guess records.  Within `guess.js` we can identify the clear area of the code where things are going to start changing - the *in memory* listings:
+
+```js
+
+const Framework = require('./framework');
+const http = require('http');
+
+const games = [];  // <- this is the in-memory array of games 
+                   //    that we will be getting rid of!
 
 
+class Game {
+    #secret;
+    constructor(id) {
+        this.id = id;
+
+        // Create the secret number
+        this.#secret = Math.floor(Math.random() * 10) + 1;
+        this.guesses = [];
+
+        ...
+
+```
+The games array will be going away, instead we will retrieve games from the database.  In order to do that, we need to include a library for Node.js code that can *implement* the SQLite code/logic.  There are several libraries available to do this (SQLite is immensely popular), we will use a library called `better-sqlite3`.  To install it, you need to execute the following command from within the same directory as `guess.js`, `framework.js` and `guess.db`.
+
+```
+npm install better-sqlite3
+```
+After installing, do a `dir` or `ls` - you should see new files/folders - `package.json`, `package-lock.json` and `node_modules`.  We are going to look more closely at these in the next chapter - for now simply understand that you've downloaded additional JavaScript (and C) code that you can now utilize via `require` statements in your own code.
+
+At the top of the `guess.js` file, let's *require* the new library, and open a connection to the `guess.db` database file.  
+
+```js
+const Framework = require('./framework');
+const http = require('http');
+
+// Require a reference to the better-sqlite3 
+// library
+const sql = require('better-sqlite3');
+
+// Open the database file.  db will now be an
+// object associated with that file, and can 
+// be used to access data within it.
+const db = sql('guess.db');
+
+```
+
+We already put one row in the `guess.db` file, let's add a *temporary* line of code just to test things out, at the bottom of `guess.js`:
+
+```js
+const router = new Framework.Router();
+router.get('/', start);
+router.post('/', guess, true, schema);
+router.get('/history', history);
+router.get('/history', game_history, true, [{ key: 'gameId', type: 'int', required: true }]);
+
+// This is temporary.  We are issuing a select
+// statement to get all the rows currently in game.
+const r = db.prepare('select * from game').get();
+console.log(r);
+
+http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
+```
+The `db.prepare` function returns a *prepared statement*, which you can think of as a compiled, but not yet *exectured* SQL command.  The prepared statement has a `get` function, which fetches the results of the SQL statement.  The result of `get` is an object, representing the row returned.
+
+If we run that code, you will see the following print out  - which is from the original `insert` we did on the `guess.db` file.
 
 
-First off, copy the application code from the previous example (LINK).
+Let's prove out a bit more.  Open sqlite3 again, and add two more games to the table:
+
+```
+sqlite3 guess.db
+SQLite version 3.43.2 2023-10-10 13:08:14
+Enter ".help" for usage hints.
+sqlite> insert into game (secret, completed, time) values(6, 1, "thursday");
+sqlite> insert into game (secret, completed, time) values(3, 0, "today");
+sqlite> ^D
+```
+Note that we are using 1 for completed to represent a game that was played to completion, and 0 for an in progress game.  If we re-run `node guess.js`, we will see (somewhat unexpectedly) still just one record - the first one we created. That's because `get` returns only the *first* record matched by the SQL query.  If we want them *all*, we need to call *all*!  
+
+```js
+const r = db.prepare('select * from game').all();
+console.log(r);
+```
+```
+[
+  { id: 1, secret: 5, completed: 1, time: 'yesterday' },
+  { id: 2, secret: 6, completed: 1, time: 'thursday' },
+  { id: 3, secret: 3, completed: 0, time: 'today' }
+]
+```
+Notice the `id` property on each of  these records.  We didn't explicitely add them when doing the the insert.  Instead, sqlite has created them for us.  That's because when we called `CREATE TABLE` when creating the actual table, we set the 
+
+**Pro Tip**&#128161; You might be somewhat surprised to see that the `db` functions are *not* asynchronous.  Most database libraries in Node.js are asynchronous, and work with promises - which should make sense - databases are I/O after all.  `better-sqlite3` explicetly breaks the trend, offering a synchrnonous API.  At first, this was seen as farely controversial, however the overwehlming majority of database calls end up being done in strict sequence, and there are some advantages to having a synchronous API in terms of synchronization and overall performance of the database logic.  All that said, you can expect *most* libraries to have asynchronous APIs rather than synchronous - `better-sqlite3` is the exception to the rule.
+
+## Integrating into Guessing Game
+
+At this point, we know enough to get to work on our application. We need to revise the following:
+
+1. When a game is created, instead of adding an object to the `games` array, we `INSERT` into the database.
+2. When rendering the guess page (the form that the user enters their guess on), we must find the game, by it's ID, by finding it in the database.
+3. Recording when the game is completed, such that it is saved to the db rather than just edited in memory.
+4. Recording guesses (we'll wait on this)
+5. Rendering game list (history page)
+
+We'll wait on #4 for moment, we'll need another table in the database for that.
+
+### Creating the Game Record
+We create game records by calling the constructor of the `Game` class when rendering the start page.  Here's the existing code:
+
+```js
+
+const start = (req, res) => {
+    // The parameter to the Game constructor is the ID.  We used
+    // the current length of the games array as an array, since it
+    // is unique.
+    const game = new Game(games.length);
+    // We then push the new instance of the game into the array.
+    games.push(game);
+    send_page(res, make_guess_page(game));
+}
+```
+Two things will need to change here.  One, we are not going to pass an `id` parameter into the constructor of the Game class anymore.  This is because we are going to defer this job to SQLite, since it will automatically assign an `id` to each record we insert.  Let's modify the `Game` constructor as follows:
+
+```js
+class Game {
+    // #secret; <- remove this, it's a normal variable now
+    constructor(id) {
+        // this.id = id;  <- Delete this line.
+
+        // Create the secret number
+        // Note it's no longer #secret, it's a normal (public) member.
+        this.secret = Math.floor(Math.random() * 10) + 1;
+        this.guesses = [];
+        this.complete = 0;  // <- changed from false to 0
+    }
+```
+
+Note we also have changed `#secret` to be a regular class property, instead of a *private* property.  This is because our code outside of the class will need to access (and populate, perhaps) the secret value - taking it to and from the database file.  Finally, we changed our initialization of `complete` to `0`, from `false`.  SQLite does not support *boolean* values, instead it used `1` and `0` and to keep the rest of our code simple, we'll adopt the same strategy.
+
+Now, in the `start` function, we will insert the game instance into the db, and use the returned *changes* object to learn which `id` value was assigned to the new game record.  We need that to be part of the `game` object we pass to `make_guess_page`, since that function places the game object's `id` field into a hidden form field.
+
+```js
+const start = (req, res) => {
+    const game = new Game(); // <- no id passed to constructor
+
+    const stmt = db.prepare('insert into game (secret, completed) values (?, ?)');
+    const info = stmt.run(game.secret, game.complete);
+
+    // The info object returned by the run command will always contain lastInsertRowId
+    // when running an insert command - since sqlite is generating the id for us.
+    game.id = info.lastInsertRowid;
+    
+    //games.push(game);  <- no longer using the array!
+    send_page(res, make_guess_page(game));
+}
+```
+This properly inserts the game into the database.  You can test it - run the web app (`node guess.js`) and start a game by loading the `/` page in your web browser. Then, from the command line, go into `sqlite3` and do a `select * from game;` command.  You'll see the new game was added.
+
+### Finding the Game to Render
+Now let's look at the `guess` page rendering function.  This function is called when we *receive* an HTTP post message, containing the game ID and the user's guess. It's job is to compare the users's guess with the game's secret number.  It needs to be adjusted, because we are no longer putting the game in an array.
+
+```js
+const guess = async (req, res) => {
+    
+    // This is no longer going to work, since the game isn't in an array
+    // const game = games.find((g) => g.id === req.body.gameId);
+
+    // Instead, we pull the game from the database.
+    const game = db.prepare('select * from game where id = ?').get(req.body.gameId);
+
+    if (!game) {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
+    const response = game.make_guess(req.body.guess);
+    if (response) {
+        send_page(res, make_guess_page(game, response));
+    } else {
+        send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
+    }
+}
+```
+While this *looks* reasonable, we aren't quite there.  The `game` object is just a plain old JavaScript object - it is **not** an instance of the `Game` class, as it was when we were finding it in the `games` array.  We want to treat it like a class though, since we call `game.make_guess` later on in the function.
+
+Let's add a *factory* method to the `Game` class that accepts a regular JavaScript object, and builds an instance.
+
+```js
+class Game {
+
+    static fromRecord(record) {
+        const game = new Game();
+        game.id = record.id;
+        game.secret = record.secret;
+        game.guesses = record.guesses;
+        game.complete = record.completed;
+        game.time = record.time;
+        game.guesses = [];
+        return game;
+    }
+
+    constructor(id) {
+        ...
+
+```
+Now we can use that function in the `game` function:
+
+```js
+const guess = async (req, res) => {
+    const record = db.prepare('select * from game where id = ?').get(req.body.gameId);
+    if (!record) {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
+    // create a game instance from the record found in the db
+    const game = Game.fromRecord(record);
+    const response = game.make_guess(req.body.guess);
+    if (response) {
+        send_page(res, make_guess_page(game, response));
+    } else {
+        send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
+    }
+}
+```
+
+### Recording Game state changes
+Inside the `game` function above we call `game.make_guess`.  That function is shown below:
 
 
+```js
+class Game {
+    ...
+    make_guess(user_guess) {
+        this.guesses.push(user_guess);
+        if (user_guess === this.secret) {
+            this.complete = true;
+            this.time = new Date();
+        }
+        return this.guess_response(user_guess);
+    }
+    ...
+```
+Let's ignore the `guesses` part (that's part #4 from our list of changes above), but we should figure out how to deal with the recording of `complete` and `time`.  As mentioned before, SQLite doesn't use *boolean* data, instead we will indicate that the game is complete by setting that value to `1`. SQLite also doesn't use `Date` objects - instead we defined that column as simple text.  We can format a `Date` object in JavaScript into something human-readable pretty easily though:
 
---- Connecting to the database from our code
-    --- npm install sqllite
+```js
+class Game {
+    ...
+    make_guess(user_guess) {
+        this.guesses.push(user_guess);
+        if (user_guess === this.secret) {
+            this.complete = 1;
+            this.time = (new Date()).toLocaleDateString();
+        }
+        return this.guess_response(user_guess);
+    }
+    ...
 
-    --- dotenv - never put credentials and connection information in your code!
-        --- source control
-        --- deployment
+```
+**Important**:  Changing the member variables of the `Game` class instance *does not change what's in the database*. This is critical - the entire purpose of storing things in a database is that the database is the *single source of truth* - in particular, between HTTP requests.  We are no longer storing game objects in a global memory array - meaning this instance of `Game` that was created when the request was made (inside the `game` function) is gone once the request is served.  The change we are making is gone too.  **We need to persist the change BACK to the database** so the game is marked as completed.  
 
-    --- Reference next chapter -that's where we will use discuss npm install in more depth.
+Let's return to the `game` function, were we called the `game.make_guess` method in the first place.  After making the call, we **must** update the game record in the database.
 
-    --- Async because this is a file of course!
+```js
+const guess = async (req, res) => {
+    const record = db.prepare('select * from game where id = ?').get(req.body.gameId);
+    if (!record) {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
+    // create a game instance from the record found in the db
+    const game = Game.fromRecord(record);
+    const response = game.make_guess(req.body.guess);
+    if (response) {
+        send_page(res, make_guess_page(game, response));
+    } else {
+        send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
+    }
 
-        --- 
+    const stmt = db.prepare('update game set completed = ?, time = ? where id = ?');
+    stmt.run(game.complete, game.time, game.id);
+}
 
----- Quickly review the create/read/update and the connect code.  Discuss the actual functions, and show that they are being put into a separate file.
-    --- Separate section here... and make clear we aren't covering SQL.  Link out!
+```
+At this point, if you go ahead and play a game with the web browser, and play the game to completion, you should see a record in the database that has `complete` = `1` and the date in which you completed it.  Progress!
 
----- Start editing, removing the games variables, instead creating a database and connecting to it.
-        --- no await outside functions... instant requests?
+### Viewing Game Listings
+The `/history` page displays a list of games, which in the previous example were game class instances.  Utilizing our `db` and the `fromRecord` static method, we can fairly easily modify the `history` function to generate the same page using the database:
 
----- Update game_lookup
----- Update start (creating a game).
-     --- Talk about automatic primary keys
----- Update places with await.-
----- Adding guesses to DB and marking as complete.
-    - Add a guess list page for each game.
+```js
+const history = (req, res) => {
 
+    // Before, the games array was just in memory. It's not anymore, we need to 
+    // get all the completed games from the database, and build instances from 
+    // the records.  Otherwise, the HTML is EXACTLY the same.
+    const records = db.prepare('select * from game where completed = ?').all(1);
+    const games = records.map(r => Game.fromRecord(r));
+
+    const html = heading() +
+        `
+        <table>
+            <thead>
+                <tr>
+                    <th>Game ID</th>
+                    <th>Num Guesses</th>
+                    <th>Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${games.filter(g => g.complete).map(g => `
+                    <tr>
+                        <td><a href="/history?gameId=${g.id}">${g.id}</a></td>
+                        <td>${g.guesses.length}</td>
+                        <td>${g.time}</td>
+                    </tr>
+                `).join('\n')}
+            </tbody>
+        </table>
+        <a href="/">Play the game!</a>
+        `
+        + footing();
+    send_page(res, html);
+}
+
+```
+If you load up `http://localhost:8080/history` you will see a table, and (unless you deleted rows we created before) you'll see games completed "yesterday" and "thursday", alongside any other games you completed while writing the code.  You will notice however that the *number of guesses* is always 0 - which obviously is wrong.  It took some number of guesses to get the right number!
+
+The problem is that we aren't storing guesses in the database. We have an array *inside* the `Game` class instances, but that array is never saved to the database.  It isn't populated in `fromRecord` either.  We need to fix this.
+
+## Guesses within Games, Foriegn Keys
+Without diving *too far* into relational database design, let's cover two important design principles:  
+
+1.  We **never** store *lists* as columns in relational database tables.
+2.  We **always** relate data *between* tables with constraints where applicable.
+
+The first is pretty important - and pretty relevant to our guessing game.  Users are going to make a sequence of guesses. We **do not** want to store those guesses as a list.  Instead, the proper way to store this type of data is in a *new* table - called `guesses`.  The `guesses` table will contain *at least* two columns (we'll add a third in a moment) - `game` and `guess`.  Each row in the table will contain a unique guess (corresponding to a guess the user made), and the game (id) it is associated with.  We can always retrieve all the guesses for a game by doing a `select * from guess where game = <game_id>`.
+
+In order to remember which *order* the guesses game in, we'll also add a third column - `time`.  Unlike the `time` in `game`, we'll use an actual integer timestamp (seconds since January 1, 1970) so we can later order / sort easily.
+
+The second principle is the issue of *constraints*.  In our `guesses` table, we have a `game` column that *relates* to the `game` table.  The value (id) found in the game column of the guess table points us to a game row in game table - by way of `guesses.game == game.id`.  It's a *relationahip*.  We are using a *relational database*.  We don't have to, but it would be a shame not to tell the database that this relationship exists. If we do, it will do lots of nice stuff for us - *like deleting guesses associated with games that we delete, automatically*!
+
+This type of relationship is called a *foreign key*.  The `guesses.game` column is a *foreign key*, because it is actually a (primary) **key** of a *different* table.  You can learn a lot more about foreign keys [here](https://www.tutorialspoint.com/sql/sql-foreign-key.htm).
+
+Let's create the table, appropriately marking `guesses.game` as a foreign key.
+
+```
+sqlite> create table guesses 
+        (game integer, 
+        guess integer, 
+        time integer, 
+        foreign key(game) references game(id));
+```
+Now we can add guesses to the database whenever we make a guess.
+
+
+```js
+const guess = async (req, res) => {
+    const record = db.prepare('select * from game where id = ?').get(req.body.gameId);
+    if (!record) {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
+    // create a game instance from the record found in the db
+    const game = Game.fromRecord(record);
+    const response = game.make_guess(req.body.guess);
+    if (response) {
+        send_page(res, make_guess_page(game, response));
+    } else {
+        send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
+    }
+
+    // We add a guess record into the guesses table regardless of whether the 
+    // guess was low, high, or correct. We'll be able to figure out if it was too 
+    // high or low based on the game's secret number anyway.
+    const g = db.prepare('insert into guesses (game, guess, time) values (?, ?, ?)');
+    g.run(game.id, req.body.guess, (new Date()).getTime());
+
+    const stmt = db.prepare('update game set completed = ?, time = ? where id = ?');
+    stmt.run(game.complete, game.time, game.id)
+
+}
+```
+Now, before we call `fromRecord` we can find the guesses and pass them into the function.
+
+```js
+const history = (req, res) => {
+
+    const records = db.prepare('select * from game where completed = ?').all(1);
+    for (const r of records) {
+        r.guesses = db.prepare('select * from guesses where game = ? order by time').all(r.id).map(g => g.guess);
+    }
+    const games = records.map(r => Game.fromRecord(r));
+
+    const html = heading() +
+
+        ....
+```
+And inside `fromRecord` we can pass along that value:
+
+```js
+static fromRecord(record) {
+    const game = new Game();
+    game.id = record.id;
+    game.secret = record.secret;
+    game.guesses = record.guesses;
+    game.complete = record.completed;
+    game.time = record.time;
+    game.guesses = record.guesses;
+    return game;
+}
+
+```
+
+Now, when you view the `/history` page, the **correct** number of guesses will be shown.
+
+**Pro Tip**&#128161; If you know about SQL and relational databases, you might be a little worried about what you just saw. It's *really* inefficient to issue separate sql statements for **each** game, to get the guesses.  We should use `JOIN`. We probably should just get the `count(*)` of `guesses` rather than all the guesses too - we can always get the actual guess records when rending the individual game's history page.  All of these things are really important, but right now we **just** focusing on how to *integrate* a database.  Making better choices with our SQL won't change how that's done - it will just improve performance!
+
+### The Game's History page
+Finally, we can modify the rendering of the game itself.  Here's the code!
+
+```js
+const game_history = (req, res) => {
+    const record = db.prepare('select * from game where id = ?').get(req.query.gameId);
+    record.guesses = db.prepare('select * from guesses where game = ? order by time desc').all(record.id).map(g => g.guess);
+    const game = Game.fromRecord(record);
+
+    //const game = games.find((g) => g.id === req.query.gameId);
+    if (!game) {
+        res.writeHead(404);
+        res.end();
+
+    ...
+```
+
+This section has completely transformed the Guessing Game application from a toy application that couldn't hold on to data between restarts, to something is reallyu starting to take shape. It's recognizable as a web application. But it suffers from some design flaws, that we can improve.  Over the remaining two sections of this chapter, we will iterate on the design to improve it in ways that increases reliability, maintainability, and portability.

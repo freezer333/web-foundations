@@ -51,12 +51,12 @@
 - [Routing, Routers, and a Framework](./frameworks/frameworks.md)
     - [Matching and Routing](./frameworks/matching-routing.md)
     - [Modules](./frameworks/reusable.md)
-    - [Guessing Game - Version 2](./frameworks/guessing-game-02.md)
+    - [Guessing Game - Version 2 - Framework](./frameworks/guessing-game-02.md)
 
 - [Working with Databases](./database/database.md)
     - [Working with Databases](./database/working-with-databases.md)
     - [Database maintenance](./database/db-maintenance.md)
-    - [The Guessing Game Database](./database/db-app.md)
+    - [Guessing Game Version 3 - Database](./database/db-app.md)
 
 - [The NPM Ecosystem](./npm/npm.md)
     - [Using NPM](./npm/using-npm.md)

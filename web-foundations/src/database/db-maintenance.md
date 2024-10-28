@@ -1,4 +1,6 @@
 # Database maintenance
+---- Connection string (dotenv)
+
 ---- Data Cleanup, Data Bootstrapping, Createing a Guessing Game Wrapper
 
     - On start up, clear out incomplete games

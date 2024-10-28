@@ -2,25 +2,39 @@
 // Contents of guess.js - with framework.js in the same directory
 const Framework = require('./framework');
 const http = require('http');
+const sql = require('better-sqlite3');
+
+const db = sql('guess.db');
 
 const games = [];
 
 
 class Game {
-    #secret;
+
+    static fromRecord(record) {
+        const game = new Game();
+        game.id = record.id;
+        game.secret = record.secret;
+        game.guesses = record.guesses;
+        game.complete = record.completed;
+        game.time = record.time;
+        game.guesses = record.guesses;
+        return game;
+    }
+
     constructor(id) {
-        this.id = id;
+        // this.id = id;  <- Delete this line.
 
         // Create the secret number
-        this.#secret = Math.floor(Math.random() * 10) + 1;
+        this.secret = Math.floor(Math.random() * 10) + 1;
         this.guesses = [];
-        this.complete = false;
+        this.complete = 0;
     }
 
     guess_response(user_guess) {
-        if (user_guess > this.#secret) {
+        if (user_guess > this.secret) {
             return "too high";
-        } else if (user_guess < this.#secret) {
+        } else if (user_guess < this.secret) {
             return "too low";
         } else {
             return undefined;
@@ -29,9 +43,9 @@ class Game {
 
     make_guess(user_guess) {
         this.guesses.push(user_guess);
-        if (user_guess === this.#secret) {
-            this.complete = true;
-            this.time = new Date();
+        if (user_guess === this.secret) {
+            this.complete = 1;
+            this.time = (new Date()).toLocaleDateString();
         }
         return this.guess_response(user_guess);
     }
@@ -74,28 +88,50 @@ const make_guess_page = (game, result) => {
 }
 
 const start = (req, res) => {
-    const game = new Game(games.length);
-    games.push(game);
-    send_page(res, make_guess_page(game));
+    const game = new Game(); // <- no id passed to constructor
 
+    const stmt = db.prepare('insert into game (secret, completed) values (?, ?)');
+    const info = stmt.run(game.secret, game.complete);
+
+    // The info object returned by the run command will always contain lastInsertRowId
+    // when running an insert command - since sqlite is generating the id for us.
+    game.id = info.lastInsertRowid;
+
+    //games.push(game);  <- no longer using the array!
+    send_page(res, make_guess_page(game));
 }
 
 const guess = async (req, res) => {
-    const game = games.find((g) => g.id === req.body.gameId);
-    if (!game) {
+    const record = db.prepare('select * from game where id = ?').get(req.body.gameId);
+    if (!record) {
         res.writeHead(404);
         res.end();
         return;
     }
+    // create a game instance from the record found in the db
+    const game = Game.fromRecord(record);
     const response = game.make_guess(req.body.guess);
     if (response) {
         send_page(res, make_guess_page(game, response));
     } else {
         send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
     }
+    const g = db.prepare('insert into guesses (game, guess, time) values (?, ?, ?)');
+    g.run(game.id, req.body.guess, (new Date()).getTime());
+
+    const stmt = db.prepare('update game set completed = ?, time = ? where id = ?');
+    stmt.run(game.complete, game.time, game.id)
+
 }
 
 const history = (req, res) => {
+
+    const records = db.prepare('select * from game where completed = ?').all(1);
+    for (const r of records) {
+        r.guesses = db.prepare('select * from guesses where game = ? order by time').all(r.id).map(g => g.guess);
+    }
+    const games = records.map(r => Game.fromRecord(r));
+
     const html = heading() +
         `
         <table>
@@ -123,7 +159,11 @@ const history = (req, res) => {
 }
 
 const game_history = (req, res) => {
-    const game = games.find((g) => g.id === req.query.gameId);
+    const record = db.prepare('select * from game where id = ?').get(req.query.gameId);
+    record.guesses = db.prepare('select * from guesses where game = ? order by time desc').all(record.id).map(g => g.guess);
+    const game = Game.fromRecord(record);
+
+    //const game = games.find((g) => g.id === req.query.gameId);
     if (!game) {
         res.writeHead(404);
         res.end();
