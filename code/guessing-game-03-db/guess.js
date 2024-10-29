@@ -2,54 +2,19 @@
 // Contents of guess.js - with framework.js in the same directory
 const Framework = require('./framework');
 const http = require('http');
-const sql = require('better-sqlite3');
+
+const Game = require('./game').Game;
+const GuessDatabase = require('./guess-db').GuessDatabase;
+
+
 require('dotenv').config();
 
 if (process.env.DB_FILENAME === undefined) {
     console.error('Please set the DB_FILENAME environment variable');
     process.exit(1);
 }
-const db = sql(process.env.DB_FILENAME);
 
-class Game {
-
-    static fromRecord(record) {
-        const game = new Game();
-        game.id = record.id;
-        game.secret = record.secret;
-        game.guesses = record.guesses;
-        game.complete = record.completed;
-        game.time = record.time;
-        game.guesses = record.guesses;
-        return game;
-    }
-
-    constructor() {
-        // Create the secret number
-        this.secret = Math.floor(Math.random() * 10) + 1;
-        this.guesses = [];
-        this.complete = 0;
-    }
-
-    guess_response(user_guess) {
-        if (user_guess > this.secret) {
-            return "too high";
-        } else if (user_guess < this.secret) {
-            return "too low";
-        } else {
-            return undefined;
-        }
-    }
-
-    make_guess(user_guess) {
-        if (user_guess === this.secret) {
-            this.complete = 1;
-            this.time = (new Date()).toLocaleDateString();
-        }
-        return this.guess_response(user_guess);
-    }
-}
-
+const GameDb = new GuessDatabase(process.env.DB_FILENAME);
 
 // The following three functions are prime candidates for a framework too, 
 // and we will be moving them into something soon!
@@ -87,21 +52,13 @@ const make_guess_page = (game, result) => {
 }
 
 const start = (req, res) => {
-    const game = new Game(); // <- no id passed to constructor
-
-    const stmt = db.prepare('insert into game (secret, completed) values (?, ?)');
-    const info = stmt.run(game.secret, game.complete);
-
-    // The info object returned by the run command will always contain lastInsertRowId
-    // when running an insert command - since sqlite is generating the id for us.
-    game.id = info.lastInsertRowid;
-
-    //games.push(game);  <- no longer using the array!
+    const game = new Game();
+    GameDb.add_game(game);
     send_page(res, make_guess_page(game));
 }
 
 const guess = async (req, res) => {
-    const record = db.prepare('select * from game where id = ?').get(req.body.gameId);
+    const record = GameDb.get_game(req.body.gameId);
     if (!record) {
         res.writeHead(404);
         res.end();
@@ -115,20 +72,13 @@ const guess = async (req, res) => {
     } else {
         send_page(res, `<h1> Great job!</h1> <a href="/">Play again</a>`);
     }
-    const g = db.prepare('insert into guesses (game, guess, time) values (?, ?, ?)');
-    g.run(game.id, req.body.guess, (new Date()).getTime());
 
-    const stmt = db.prepare('update game set completed = ?, time = ? where id = ?');
-    stmt.run(game.complete, game.time, game.id)
-
+    GameDb.add_guess(game, req.body.guess);
+    GameDb.update_game(game);
 }
 
 const history = (req, res) => {
-
-    const records = db.prepare('select * from game where completed = ?').all(1);
-    for (const r of records) {
-        r.guesses = db.prepare('select * from guesses where game = ? order by time').all(r.id).map(g => g.guess);
-    }
+    const records = GameDb.get_games();
     const games = records.map(r => Game.fromRecord(r));
 
     const html = heading() +
@@ -158,8 +108,7 @@ const history = (req, res) => {
 }
 
 const game_history = (req, res) => {
-    const record = db.prepare('select * from game where id = ?').get(req.query.gameId);
-    record.guesses = db.prepare('select * from guesses where game = ? order by time desc').all(record.id).map(g => g.guess);
+    const record = GameDb.get_game(req.query.gameId);
     const game = Game.fromRecord(record);
 
     if (!game) {
@@ -202,8 +151,5 @@ router.get('/', start);
 router.post('/', guess, true, schema);
 router.get('/history', history);
 router.get('/history', game_history, true, [{ key: 'gameId', type: 'int', required: true }]);
-
-// Delete all the incomplete games on startup.
-db.prepare('delete from game where completed = ?').run(0);
 
 http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);

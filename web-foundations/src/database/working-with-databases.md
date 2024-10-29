@@ -146,7 +146,7 @@ class Game {
 The games array will be going away, instead we will retrieve games from the database.  In order to do that, we need to include a library for Node.js code that can *implement* the SQLite code/logic.  There are several libraries available to do this (SQLite is immensely popular), we will use a library called `better-sqlite3`.  To install it, you need to execute the following command from within the same directory as `guess.js`, `framework.js` and `guess.db`.
 
 ```
-npm install better-sqlite3
+npm install --save better-sqlite3
 ```
 After installing, do a `dir` or `ls` - you should see new files/folders - `package.json`, `package-lock.json` and `node_modules`.  We are going to look more closely at these in the next chapter - for now simply understand that you've downloaded additional JavaScript (and C) code that you can now utilize via `require` statements in your own code.
 
@@ -247,9 +247,7 @@ Two things will need to change here.  One, we are not going to pass an `id` para
 ```js
 class Game {
     // #secret; <- remove this, it's a normal variable now
-    constructor(id) {
-        // this.id = id;  <- Delete this line.
-
+    constructor() {  // <- removed the id from the constructor parameter
         // Create the secret number
         // Note it's no longer #secret, it's a normal (public) member.
         this.secret = Math.floor(Math.random() * 10) + 1;
@@ -322,7 +320,7 @@ class Game {
         return game;
     }
 
-    constructor(id) {
+    constructor() {
         ...
 
 ```
@@ -472,7 +470,8 @@ sqlite> create table guesses
         (game integer, 
         guess integer, 
         time integer, 
-        foreign key(game) references game(id));
+        foreign key(game) references game(id) on delete cascade
+        );
 ```
 Now we can add guesses to the database whenever we make a guess.
 
@@ -556,5 +555,9 @@ const game_history = (req, res) => {
 
     ...
 ```
+<hr/>
+
+Here's the [complete code for the application](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-db) we just built.  [TODO - GITHUB CODE]
+
 
 This section has completely transformed the Guessing Game application from a toy application that couldn't hold on to data between restarts, to something is reallyu starting to take shape. It's recognizable as a web application. But it suffers from some design flaws, that we can improve.  Over the remaining two sections of this chapter, we will iterate on the design to improve it in ways that increases reliability, maintainability, and portability.
