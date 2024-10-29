@@ -9,10 +9,8 @@ class Parser {
     _apply_schema(payload) {
         for (const item of this.#schema.filter(i => payload[i.key])) {
             if (item.type === 'int') {
-                console.log('Parsing int' + item.key);
                 payload[item.key] = parseInt(payload[item.key])
             } else if (item.type === 'float') {
-                console.log('Parsing float' + item.key);
                 payload[item.key] = parseInt(payload[item.key])
             } else if (item.type === 'bool') {
                 console.log('Parsing bool' + item.key);
