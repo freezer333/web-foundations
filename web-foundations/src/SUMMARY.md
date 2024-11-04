@@ -62,5 +62,8 @@
     - [Using NPM](./npm/using-npm.md)
     - [Publishing to NPM](./npm/publishing-to-npm.md)
 
-- [Templating](./templating.md)
+- [Templating](./pug/pug.md)
+    - [HTML Templates](./pug/templates.md)
+    - [PUG Templates](./pug/pub-templates.md)
+    - [Guessing Game Version 4 - Templates](./pug/guess-pug.md)
 - [Express Framework](./express.md)

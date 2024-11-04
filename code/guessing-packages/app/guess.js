@@ -1,5 +1,4 @@
 
-// Contents of guess.js - with framework.js in the same directory
 const http = require('http');
 const Framework = require('wf-framework');
 const Game = require('wf-guess-game').Game;
