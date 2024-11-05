@@ -33,18 +33,22 @@ class GuessDatabase {
         const stmt = this.#db.prepare('insert into game (secret, completed) values (?, ?)');
         const info = stmt.run(game.secret, game.complete);
         game.id = info.lastInsertRowid;
+        return game;
     }
 
     /** Updates the completed, time values of the game */
     update_game(game) {
         const stmt = this.#db.prepare('update game set completed = ?, time = ? where id = ?');
-        stmt.run(game.complete, game.time, game.id)
+        stmt.run(game.complete, game.time, game.id);
+        return game;
     }
 
     /** Adds a guess record for the game */
     add_guess(game, guess) {
         const g = this.#db.prepare('insert into guesses (game, guess, time) values (?, ?, ?)');
-        g.run(game.id, guess, (new Date()).getTime());
+        const _guess = { game: game.id, guess: guess, time: (new Date()).getTime() };
+        g.run(_guess.game, _guess.guess, _guess.time);
+        return _guess;
     }
 
     /* Finds the game record for the game, by id - and populates

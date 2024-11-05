@@ -1,0 +1,16 @@
+doctype html
+html 
+    head 
+        title Guessing Game 
+    body 
+        table
+            thead
+                tr
+                    th Value
+                    
+            tbody
+                each g in game.guesses
+                    tr
+                        td #{g}
+                    
+        a(href="/history") Back to game history!

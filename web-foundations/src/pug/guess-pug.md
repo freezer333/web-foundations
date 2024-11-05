@@ -17,6 +17,11 @@ Our template files are as follows:
 
 ## Mixins and Includes
 
+- List guesses, with secret, to determine response in mixin
+- Add guesses to the guess page
+- Layout
+
+
 
 ## Final Template Files
 

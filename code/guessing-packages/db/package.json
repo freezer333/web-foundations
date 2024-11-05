@@ -1,6 +1,6 @@
 {
   "name": "wf-guess-db",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Database wrapper code for the Foundations of Web Development guessing game database",
   "main": "guess-db.js",
   "scripts": {
