@@ -7,7 +7,6 @@ html
             thead
                 tr
                     th Game ID
-                    th Complete
                     th Num Guesses
                     th Started
             tbody
@@ -15,7 +14,6 @@ html
                     tr
                         td
                             a(href="/history?gameId="+g.id) #{g.id}
-                        td #{g.complete ? "Yes" : ""}
-                        td #{g.num_guesses}
+                        td #{g.guesses.length}
                         td #{g.time}
         a(href="/") Play the game!

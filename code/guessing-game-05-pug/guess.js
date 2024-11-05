@@ -34,16 +34,17 @@ const guess = async (req, res) => {
     // create a game instance from the record found in the db
     const game = Game.fromRecord(record);
     const response = game.make_guess(req.body.guess);
+
+    // add_guess returns a guess record with a game id, guess, and time.
+    const guess = GameDb.add_guess(game, req.body.guess);
+    game.guesses.push(guess.guess);
+    GameDb.update_game(game);
+
     if (response) {
         render(res, 'guess', { game, response });
     } else {
         render(res, 'complete', { game });
     }
-
-    // add_guess returns a guess record with a game id, guess, and time.
-    const guess = GameDb.add_guess(game, req.body.guess);
-    game.guesses.push(guess);
-    GameDb.update_game(game);
 }
 
 const history = (req, res) => {

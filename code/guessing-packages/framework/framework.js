@@ -110,7 +110,6 @@ class Route {
             req.query = this.qparser.parse(req);
         }
         if (this.bparser) {
-            console.log("Parsing body");
             req.body = await this.bparser.parse(req);
         }
         await this.handler(req, res);
