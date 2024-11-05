@@ -3,14 +3,8 @@ html
     head 
         title Guessing Game 
     body 
-        table
-            thead
-                tr
-                    th Value
-                    
-            tbody
-                each g in game.guesses
-                    tr
-                        td #{g}
+        ul
+            each g in game.guesses
+                li #{g}
                     
         a(href="/history") Back to game history!

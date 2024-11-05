@@ -62,6 +62,8 @@ const game_history = (req, res) => {
         return;
     }
 
+
+
     render(res, 'game_history', { game });
 }
 
