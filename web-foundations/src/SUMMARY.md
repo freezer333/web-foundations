@@ -65,5 +65,8 @@
 - [Templating](./pug/pug.md)
     - [HTML Templates](./pug/templates.md)
     - [PUG Templates](./pug/pub-templates.md)
-    - [Guessing Game Version 4 - Templates](./pug/guess-pug.md)
-- [Express Framework](./express.md)
+    - [Guessing Game Version 4 and 5 - Templates](./pug/guess-pug.md)
+
+- [Express Framework](./express/express.md)
+    - [Using Express](./express/using-express.md)
+    - [Guessing game Version 6 - Express](./express/guess-express.md)

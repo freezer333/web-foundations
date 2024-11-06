@@ -216,7 +216,7 @@ http.createServer((req, res) => { router.on_request(req, res) }).listen(8080);
 ```
 This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-04-pug).  [TODO - GITHUB CODE]
 
-## Mixins and Includes
+## Version 5 - with Mixins and Includes
 Currently the game history page simply lists out all the guesses the user made.  It's implied what the secret number was, because it's the last guess.  It would be nicer to actually list the message - *too high* or *too low* right next to the number. That's pretty easy to do - we know what the secret was in the first place!
 
 The following pug syntax uses a `guess` and `secret` variable to render the correct message to the screen.
