@@ -122,7 +122,7 @@ The update the package (recall, it's on npm), we can go back into the source cod
 ```js
 record_game(game) {
     const completed = this.add_game(game);
-    game.time = new Date();
+    game.time = new Date().toLocaleDateString();
     game.complete = 1;
     this.update_game(completed);
     for (const guess of game.guesses) {
@@ -158,6 +158,23 @@ npm install
 Now we can change the code in our guessing game to use the new function, to make things look a little more straightforward.
 
 ```js
+router.post('/', async (req, res) => {
+    if (req.session.game === undefined) {
+        res.status(404).end();
+        return;
+    }
 
+    const game = Game.fromRecord(req.session.game);
+    const response = game.make_guess(req.body.guess);
+    game.guesses.push(req.body.guess);
+
+    if (response) {
+        res.render('guess', { game, response });
+    } else {
+        req.GameDb.record_game(game);
+        res.render('complete', { game });
+    }
+});
 
 ```
+This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-07-pug).  [TODO - GITHUB CODE]

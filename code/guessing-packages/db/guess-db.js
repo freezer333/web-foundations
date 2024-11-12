@@ -53,7 +53,7 @@ class GuessDatabase {
 
     record_game(game) {
         const completed = this.add_game(game);
-        game.time = new Date();
+        game.time = new Date().toLocaleDateString();
         game.complete = 1;
         this.update_game(completed);
         for (const guess of game.guesses) {

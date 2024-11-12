@@ -1,0 +1,5 @@
+# Part 3
+We can think of web development as two main branches of development: client-side (frontend) and serverside (backend), with HTTP being the network protocol that glues them together.  On the front end, HTML is foundational - we don't have web pages without HTML.  Part 1 of this book covered the core technology - HTML, HTTP, and server side development.  Part 2 refined our approach on the backend.  We went from writing extremely basic and limited web servers to using Express, Pug Templates, Databases.  We implemented state managements (cookies, sessions) and authentication.
+
+Now it's time to jump over to the *other side*.  **Client side**.  Our web pages don't have any style yet - and we're going to change that with CSS.  Our web pages are completely static, and we are going to learn to change that with *client side* JavaScript.  Along the way, we'll see modern CSS framworks, learn *responsive design* and how to target multiple devices.  We'll take a look a modern JavaScript frameworks (Vue) and architecture patters (Single Page Applications) along with HTMX and the HATEOS movement.
+

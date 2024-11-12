@@ -1,0 +1,1 @@
+# Encryption - HTTPS and TLS

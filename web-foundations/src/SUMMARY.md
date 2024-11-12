@@ -75,3 +75,15 @@
   - [Cookies](./cookies/cookies.md)
   - [Sessions](./cookies/sessions.md)
   - [Guessing game Version 7 - Session until complete](./cookies/guess-sessions.md)
+
+- [Authentication and Authorization](./auth/auth.md)
+  - [Authentication](./auth/authentication.md)
+  - [Encryption - HTTPS and TLS](./auth/encryption.md)
+  - [Credentials on the Server](./auth/credentials.md)
+  - [Guessing game Version 8 - Logging in](./auth/guess-login.md)
+
+
+- [Cascading Style Sheets](./css/css.md)
+    - [Part 3](./client-side.md)
+
+- [CSS Layout](./css/css-layout.md)
