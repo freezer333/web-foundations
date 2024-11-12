@@ -263,7 +263,7 @@ Notice that the full URL matched by specific routes is the *concatenation* of th
 
 Route files can include *other* route files, adding sub-routers to specific points using the same mounting mechanism.  This can create extremely complex URLs structures, while keeping the file structure manageable.
 
-Read up on Express routing [here]().
+Read up on Express routing [here](https://expressjs.com/en/5x/api.html#router).
 
 ## Why Express?
 In the next chapters we are going to round out *server side* application development, with cookies, essions, and authentication. These are standard parts of web applications, and express allows use to use them in an easier way than doing it ourselves - and so we are introducing Express here to support that. We will continue to add more features to servers too - and Express provides a solid foundation for those things.

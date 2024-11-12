@@ -70,3 +70,8 @@
 - [Express Framework](./express/express.md)
     - [Using Express](./express/using-express.md)
     - [Guessing game Version 6 - Express](./express/guess-express.md)
+
+- [Cookies and Sessions](./cookies/cs.md)
+  - [Cookies](./cookies/cookies.md)
+  - [Sessions](./cookies/sessions.md)
+  - [Guessing game Version 7 - Session until complete](./cookies/guess-sessions.md)

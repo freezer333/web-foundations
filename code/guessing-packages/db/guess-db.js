@@ -51,6 +51,16 @@ class GuessDatabase {
         return _guess;
     }
 
+    record_game(game) {
+        const completed = this.add_game(game);
+        game.time = new Date();
+        game.complete = 1;
+        this.update_game(completed);
+        for (const guess of game.guesses) {
+            this.add_guess(completed, guess);
+        }
+    }
+
     /* Finds the game record for the game, by id - and populates
     *  the guesses array with the guesses for the game.
     */
