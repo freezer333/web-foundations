@@ -79,6 +79,7 @@
 - [Authentication and Authorization](./auth/auth.md)
   - [Authentication](./auth/authentication.md)
   - [Encryption - HTTPS and TLS](./auth/encryption.md)
+  - [Authentication - Revisited](./auth/authentication-again.md)
   - [Credentials on the Server](./auth/credentials.md)
   - [Guessing game Version 8 - Logging in](./auth/guess-login.md)
 
