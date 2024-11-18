@@ -2,6 +2,8 @@ extends layout
 
 block content
     h1 Welcome! 
+    if error
+        p Whoops - #{error}
     form(action='/login', method='post')
         div
             input(type='text', name='username', placeholder='Username')
@@ -9,3 +11,5 @@ block content
             input(type='password', name='password', placeholder='Password')
         div     
             input(type='submit', value='Login')
+
+    p Don't have an account?  Please <a href='/signup'>signup</a>!

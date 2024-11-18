@@ -6,6 +6,7 @@
     "express-session": "^1.18.1",
     "pug": "^3.0.3",
     "wf-guess-db": "^1.1.5",
-    "wf-guess-game": "^1.0.0"
+    "wf-guess-dba": "^1.0.4",
+    "wf-guess-game": "^1.0.1"
   }
 }

@@ -8,6 +8,7 @@ class Game {
         game.complete = record.completed;
         game.time = record.time;
         game.guesses = record.guesses;
+        game.username = record.username;
         return game;
     }
 

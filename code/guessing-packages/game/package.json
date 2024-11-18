@@ -1,6 +1,6 @@
 {
   "name": "wf-guess-game",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "\"Logic for Foundations of Web Development guessing game\"",
   "main": "game.js",
   "scripts": {

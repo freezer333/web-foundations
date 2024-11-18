@@ -2,6 +2,16 @@ const express = require('express')
 const router = express.Router();
 const Game = require('wf-guess-game').Game;
 
+
+
+// Middleware to redirect to /login if not already logged in
+router.use((req, res, next) => {
+    if (!req.session.account_id) {
+        return res.redirect('/login');
+    }
+    return next();
+});
+
 router.get('/', (req, res) => {
     const records = req.GameDb.get_games();
     const games = records.map(r => Game.fromRecord(r));

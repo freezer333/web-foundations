@@ -349,4 +349,4 @@ app.listen(process.env.PORT || 8080, () => {
 
 This is a big improvement.  The code is short.  Details about routes are moved elsewhere.  This might be our *shortest* main file, and we've at the same time brought the entire Express framework into the picture - opening up lots of new functionality for use to explore!
 
-This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-06-pug).  [TODO - GITHUB CODE]
+This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-06-express).  [TODO - GITHUB CODE]

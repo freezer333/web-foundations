@@ -21,7 +21,10 @@ router.post('/', async (req, res) => {
     if (response) {
         res.render('guess', { game, response });
     } else {
-        req.GameDb.record_game(game);
+        if (req.session.account_id) {
+            game.account = req.session.account_id;
+            req.GameDb.record_game(game);
+        }
         res.render('complete', { game });
     }
 });

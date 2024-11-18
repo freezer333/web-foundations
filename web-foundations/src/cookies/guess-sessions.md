@@ -177,4 +177,4 @@ router.post('/', async (req, res) => {
 });
 
 ```
-This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-07-pug).  [TODO - GITHUB CODE]
+This example can be [found here](https://github.com/freezer333/web-foundations/tree/main/code/guessing-game-07-cookies).  [TODO - GITHUB CODE]

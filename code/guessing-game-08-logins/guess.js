@@ -1,4 +1,4 @@
-const GuessDatabase = require('wf-guess-db').GuessDatabase;
+const GuessDatabase = require('wf-guess-dba').GuessDatabase;
 const express = require('express');
 require('dotenv').config();
 
@@ -27,29 +27,12 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/login', (req, res) => {
-    res.render('login');
-});
-app.post('/login', (req, res) => {
-    if (req.body.username === 'guess' && req.body.password === 'who') {
-        req.session.authenticated = true;
-    }
-    // Logged in or not, redirect to front page.  If the login
-    // failed, we just end up redirecting right back to GET /login!
-    return res.redirect('/');
-});
-
-// Middleware to redirect to /login if not already logged in
 app.use((req, res, next) => {
-    if (!req.session.authenticated) {
-        return res.redirect('/login');
-    }
-    return next();
+    res.locals.username = req.session.account_username;
+    next();
 });
 
-// These are the routes that require authentication, 
-// added AFTER the middleware that checks for this has
-// been attached.
+app.use('/', require('./routes/account'));
 app.use('/', require('./routes/game'));
 app.use('/history', require('./routes/history'));
 
