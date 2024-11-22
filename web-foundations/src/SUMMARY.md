@@ -82,9 +82,20 @@
   - [Authentication - Revisited](./auth/authentication-again.md)
   - [Credentials on the Server](./auth/credentials.md)
   - [Guessing game Version 8 - Logging in](./auth/guess-login.md)
+  - [Project 2 - Contact List](./project2.md)
 
 
 - [Cascading Style Sheets](./css/css.md)
     - [Part 3](./client-side.md)
+    - [Styles](./css/styles.md)
+    - [Cascade](./css/cascade.md)
+    - [Text and Inline Control](./css/text.md)
+    - [Lists and tables](./css/list-tables.md)
 
 - [CSS Layout](./css/css-layout.md)
+    - [Box Model](./css/box-model.md)
+    - [Flow Layout](./css/flow-layout.md)
+    - [Positioning](./css/positioning.md)
+    - [Flexbox and Grid](./css/flex-grid.md)
+    - [Responsive Design](./css/responsive.md)
+    - [Guessing Game version 8 - with Style](./css/guess-css.md)
